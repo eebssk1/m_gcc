@@ -30,7 +30,7 @@ along with GCC; see the file COPYING3.  If not see
 #define TARGET_SUBTARGET_DEFAULT \
 	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
 	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE \
-	 | MASK_MS_BITFIELD_LAYOUT)
+	 | MASK_MS_BITFIELD_LAYOUT | MASK_NO_ALIGN_VECTOR_INSN)
 
 /* See i386/crtdll.h for an alternative definition. _INTEGRAL_MAX_BITS
    is for compatibility with native compiler.  */
@@ -185,7 +185,7 @@ along with GCC; see the file COPYING3.  If not see
 #define REAL_LIBGCC_SPEC \
   "%{mthreads:-lmingwthrd} -lmingw32 \
    " SHARED_LIBGCC_SPEC " \
-   -lmoldname -lmingwex -lmsvcrt -lkernel32"
+   -lmoldname -lmingwex %{!mcrtdll=*:-lmsvcrt} %{mcrtdll=*:-l%*} -lkernel32"
 
 #undef STARTFILE_SPEC
 #define STARTFILE_SPEC "%{shared|mdll:dllcrt2%O%s} \
