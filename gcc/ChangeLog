@@ -1,3 +1,33 @@
+2023-02-24  Sebastian Huber  <sebastian.huber@embedded-brains.de>
+
+	Backported from master:
+	2023-02-24  Sebastian Huber  <sebastian.huber@embedded-brains.de>
+
+	* config/riscv/t-rtems: Keep only -mcmodel=medany 64-bit multilibs.
+	Add non-compact 32-bit multilibs.
+
+2023-02-20  Alex Coplan  <alex.coplan@arm.com>
+
+	Backported from master:
+	2023-02-06  Alex Coplan  <alex.coplan@arm.com>
+
+	PR target/104921
+	* config/aarch64/aarch64-simd.md (aarch64_bfmlal<bt>_lane<q>v4sf):
+	Use correct constraint for operand 3.
+
+2023-02-18  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2023-02-18  Xi Ruoyao  <xry111@xry111.site>
+
+	* config.gcc (triplet_abi): Set its value based on $with_abi,
+	instead of $target.
+	(la_canonical_triplet): Set it after $triplet_abi is set
+	correctly.
+	* config/loongarch/t-linux (MULTILIB_OSDIRNAMES): Make the
+	multiarch tuple for lp64d "loongarch64-linux-gnu" (without
+	"f64" suffix).
+
 2023-02-15  Eric Botcazou  <ebotcazou@adacore.com>
 
 	PR target/90458
