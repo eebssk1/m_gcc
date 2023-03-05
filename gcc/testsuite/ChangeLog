@@ -1,3 +1,108 @@
+2023-03-04  Harald Anlauf  <anlauf@gmx.de>
+
+	Backported from master:
+	2023-02-27  Harald Anlauf  <anlauf@gmx.de>
+
+	PR fortran/108937
+	* gfortran.dg/ibits_2.f90: New test.
+
+2023-03-04  Harald Anlauf  <anlauf@gmx.de>
+
+	Backported from master:
+	2023-02-22  Harald Anlauf  <anlauf@gmx.de>
+
+	PR fortran/96024
+	* gfortran.dg/pr96024.f90: New test.
+
+2023-03-04  Harald Anlauf  <anlauf@gmx.de>
+
+	Backported from master:
+	2023-02-21  Harald Anlauf  <anlauf@gmx.de>
+
+	PR fortran/96025
+	* gfortran.dg/pr96025.f90: New test.
+
+2023-03-04  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/108550
+	* g++.dg/cpp1y/var-templ70.C: New test.
+	* g++.dg/cpp1y/var-templ71.C: New test.
+	* g++.dg/cpp1y/var-templ72.C: New test.
+
+2023-03-04  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2023-02-22  Marek Polacek  <polacek@redhat.com>
+
+	PR c/108880
+	* c-c++-common/ubsan/pr108880.c: New test.
+
+2023-03-04  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2023-03-02  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/106259
+	* g++.dg/warn/Wmismatched-tags-11.C: New test.
+
+2023-03-04  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2023-03-01  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/107574
+	* g++.dg/cpp0x/ptrmem-cst1.C: New test.
+
+2023-03-04  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2023-02-28  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/107938
+	* g++.dg/cpp1y/var-templ73.C: New test.
+	* g++.dg/cpp1y/var-templ74.C: New test.
+	* g++.dg/warn/Waddress-of-packed-member3.C: New test.
+
+2023-03-03  Iain Buclaw  <ibuclaw@gdcproject.org>
+
+	Backported from master:
+	2023-03-03  Iain Buclaw  <ibuclaw@gdcproject.org>
+
+	PR d/108877
+	* gdc.dg/imports/pr108877a.d: New test.
+	* gdc.dg/pr108877.d: New test.
+
+2023-02-27  Martin Liska  <mliska@suse.cz>
+
+	Backported from master:
+	2023-02-24  Martin Liska  <mliska@suse.cz>
+
+	PR sanitizer/108834
+	* c-c++-common/asan/global-overflow-1.c: Test line and column
+	info for a global variable.
+
+2023-02-27  Kewen Lin  <linkw@linux.ibm.com>
+
+	Backported from master:
+	2023-02-14  Kewen Lin  <linkw@linux.ibm.com>
+
+	PR target/96373
+	* gcc.target/powerpc/p9-vec-length-epil-1.c: Add -fno-trapping-math.
+	* gcc.target/powerpc/p9-vec-length-epil-2.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-epil-3.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-epil-4.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-epil-5.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-epil-6.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-epil-8.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-1.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-2.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-3.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-4.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-5.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-6.c: Likewise.
+	* gcc.target/powerpc/p9-vec-length-full-8.c: Likewise.
+	* gcc.target/powerpc/pr96373.c: New test.
+
 2023-02-20  Marek Polacek  <polacek@redhat.com>
 
 	Backported from master:
