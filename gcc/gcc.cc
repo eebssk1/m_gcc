@@ -27,11 +27,6 @@ CC recognizes how to compile each input file by suffixes in the file names.
 Once it knows which kind of compilation to perform, the procedure for
 compilation is specified by a string called a "spec".  */
 
-/* Inject some default compilation flags which are used as the default.
-   Done by the packaging build system.  Should that be done in the headers
-   gcc/config/<arch>/*.h instead?  */
-#include "distro-defaults.h"
-
 #define INCLUDE_STRING
 #include "config.h"
 #include "system.h"
@@ -976,90 +971,6 @@ proper position among the other output files.  */
 #define LINK_GCC_C_SEQUENCE_SPEC "%G %{!nolibc:%L %G}"
 #endif
 
-/* Generate full unwind information covering all program points.
-   Only needed for some architectures.  */
-#ifndef ASYNC_UNWIND_SPEC
-# ifdef DIST_DEFAULT_ASYNC_UNWIND
-#  define ASYNC_UNWIND_SPEC "%{!fno-asynchronous-unwind-tables:-fasynchronous-unwind-tables}"
-# else
-#  define ASYNC_UNWIND_SPEC ""
-# endif
-#endif
-
-/* Turn on stack protector.
- */
-#ifndef SSP_DEFAULT_SPEC
-# ifdef DIST_DEFAULT_SSP
-#   ifdef DIST_DEFAULT_SSP_STRONG
-#    define SSP_DEFAULT_SPEC " %{!fno-stack-protector:%{!fstack-protector-all:%{!ffreestanding:%{!nostdlib:%{!fstack-protector:-fstack-protector-strong}}}}}"
-#   else
-#    define SSP_DEFAULT_SPEC " %{!fno-stack-protector:%{!fstack-protector-all:%{!ffreestanding:%{!nostdlib:-fstack-protector}}}}"
-#   endif
-# else
-#  define SSP_DEFAULT_SPEC ""
-# endif
-#endif
-
-/* Turn on -Wformat -Wformat-security by  default for C, C++,
-   ObjC, ObjC++.  */
-#ifndef FORMAT_SECURITY_SPEC
-# ifdef DIST_DEFAULT_FORMAT_SECURITY
-#  define FORMAT_SECURITY_SPEC " %{!Wformat:%{!Wformat=2:%{!Wformat=0:%{!Wall:-Wformat} %{!Wno-format-security:-Wformat-security}}}}"
-# else
-#  define FORMAT_SECURITY_SPEC ""
-# endif
-#endif
-
-/* Enable -fstack-clash-protection by default. Only available
-   on some targets.  */
-#ifndef STACK_CLASH_SPEC
-# ifdef DIST_DEFAULT_STACK_CLASH
-#  define STACK_CLASH_SPEC " %{!fno-stack-clash-protection:-fstack-clash-protection}"
-# else
-#  define STACK_CLASH_SPEC ""
-# endif
-#endif
-
-/* Enable code instrumentation of control-flow transfers.
-   Available on x86 and x86_64.  */
-#ifndef CF_PROTECTION_SPEC
-# ifdef DIST_DEFAULT_CF_PROTECTION
-#  define CF_PROTECTION_SPEC " %{!m16:%{!m32:%{!fcf-protection*:%{!fno-cf-protection:-fcf-protection}}}}"
-# else
-#  define CF_PROTECTION_SPEC ""
-# endif
-#endif
-
-#ifndef BIND_NOW_SPEC
-# if defined(DIST_DEFAULT_BIND_NOW) && !defined(ACCEL_COMPILER)
-#  define BIND_NOW_SPEC " -z now"
-# else
-#  define BIND_NOW_SPEC ""
-# endif
-#endif
-
-#ifndef RELRO_SPEC
-# ifdef DIST_DEFAULT_RELRO
-#  define RELRO_SPEC " -z relro "
-# else
-#  define RELRO_SPEC ""
-# endif
-#endif
-
-/* Don't enable any of those for the offload compilers,
-   unsupported.  */
-#if !defined(DISTRO_DEFAULT_SPEC) && !defined(ACCEL_COMPILER)
-# define DISTRO_DEFAULT_SPEC ASYNC_UNWIND_SPEC SSP_DEFAULT_SPEC \
-		FORMAT_SECURITY_SPEC STACK_CLASH_SPEC CF_PROTECTION_SPEC
-#else
-# define DISTRO_DEFAULT_SPEC ""
-#endif
-#if !defined(DISTRO_DEFAULT_LINK_SPEC) && !defined(ACCEL_COMPILER)
-# define DISTRO_DEFAULT_LINK_SPEC RELRO_SPEC
-#else
-# define DISTRO_DEFAULT_LINK_SPEC ""
-#endif
-
 #ifndef LINK_SSP_SPEC
 #ifdef TARGET_LIBC_PROVIDES_SSP
 #if DEFAULT_LIBC == LIBC_MUSL
@@ -1123,7 +1034,7 @@ proper position among the other output files.  */
 #ifndef LINK_PIE_SPEC
 #ifdef HAVE_LD_PIE
 #ifndef LD_PIE_SPEC
-#define LD_PIE_SPEC "-pie" BIND_NOW_SPEC
+#define LD_PIE_SPEC "-pie"
 #endif
 #else
 #define LD_PIE_SPEC ""
@@ -1240,7 +1151,6 @@ proper position among the other output files.  */
    "%{flto|flto=*:%<fcompare-debug*} \
     %{flto} %{fno-lto} %{flto=*} %l " LINK_PIE_SPEC \
    "%{fuse-ld=*:-fuse-ld=%*} " LINK_COMPRESS_DEBUG_SPEC \
-    DISTRO_DEFAULT_LINK_SPEC \
    "%X %{o*} %{e*} %{N} %{n} %{r}\
     %{s} %{t} %{u*} %{z} %{Z} %{!nostdlib:%{!r:%{!nostartfiles:%S}}} \
     %{static|no-pie|static-pie:} %@{L*} %(mfwrap) %(link_libgcc) " \
@@ -1281,7 +1191,6 @@ static const char *cpp_spec = CPP_SPEC;
 static const char *cc1_spec = CC1_SPEC OS_CC1_SPEC;
 static const char *cc1plus_spec = CC1PLUS_SPEC;
 static const char *link_gcc_c_sequence_spec = LINK_GCC_C_SEQUENCE_SPEC;
-static const char *distro_default_spec = DISTRO_DEFAULT_SPEC;
 static const char *link_ssp_spec = LINK_SSP_SPEC;
 static const char *asm_spec = ASM_SPEC;
 static const char *asm_final_spec = ASM_FINAL_SPEC;
@@ -1340,7 +1249,7 @@ static const char *cpp_options =
 "%(cpp_unique_options) %1 %{m*} %{std*&ansi&trigraphs} %{W*&pedantic*} %{w}\
  %{f*} %{g*:%{%:debug-level-gt(0):%{g*}\
  %{!fno-working-directory:-fworking-directory}}} %{O*}\
- %{undef} %{save-temps*:-fpch-preprocess} %(distro_defaults)";
+ %{undef} %{save-temps*:-fpch-preprocess}";
 
 /* Pass -d* flags, possibly modifying -dumpdir, -dumpbase et al.
 
@@ -1534,9 +1443,9 @@ static const struct compiler default_compilers[] =
       %{save-temps*|traditional-cpp|no-integrated-cpp:%(trad_capable_cpp) \
 	  %(cpp_options) -o %{save-temps*:%b.i} %{!save-temps*:%g.i} \n\
 	    cc1 -fpreprocessed %{save-temps*:%b.i} %{!save-temps*:%g.i} \
-	  %(cc1_options)%(distro_defaults)}\
+	  %(cc1_options)}\
       %{!save-temps*:%{!traditional-cpp:%{!no-integrated-cpp:\
-	  cc1 %(cpp_unique_options) %(cc1_options) %(distro_defaults)}}}\
+	  cc1 %(cpp_unique_options) %(cc1_options)}}}\
       %{!fsyntax-only:%(invoke_as)}}}}", 0, 0, 1},
   {"-",
    "%{!E:%e-E or -x required when input is from standard input}\
@@ -1550,18 +1459,18 @@ static const struct compiler default_compilers[] =
 	  %{save-temps*|traditional-cpp|no-integrated-cpp:%(trad_capable_cpp) \
 		%(cpp_options) -o %{save-temps*:%b.i} %{!save-temps*:%g.i} \n\
 		    cc1 -fpreprocessed %{save-temps*:%b.i} %{!save-temps*:%g.i} \
-			%(cc1_options) %(distro_defaults)\
+			%(cc1_options)\
 			%{!fsyntax-only:%{!S:-o %g.s} \
 			    %{!fdump-ada-spec*:%{!o*:--output-pch %i.gch}\
 					       %W{o*:--output-pch %*}}%V}}\
 	  %{!save-temps*:%{!traditional-cpp:%{!no-integrated-cpp:\
-		cc1 %(cpp_unique_options) %(cc1_options) %(distro_defaults)\
+		cc1 %(cpp_unique_options) %(cc1_options)\
 		    %{!fsyntax-only:%{!S:-o %g.s} \
 		        %{!fdump-ada-spec*:%{!o*:--output-pch %i.gch}\
 					   %W{o*:--output-pch %*}}%V}}}}}}}", 0, 0, 0},
   {".i", "@cpp-output", 0, 0, 0},
   {"@cpp-output",
-   "%{!M:%{!MM:%{!E:cc1 -fpreprocessed %i %(cc1_options) %(distro_defaults) %{!fsyntax-only:%(invoke_as)}}}}", 0, 0, 0},
+   "%{!M:%{!MM:%{!E:cc1 -fpreprocessed %i %(cc1_options) %{!fsyntax-only:%(invoke_as)}}}}", 0, 0, 0},
   {".s", "@assembler", 0, 0, 0},
   {"@assembler",
    "%{!M:%{!MM:%{!E:%{!S:as %(asm_debug) %(asm_options) %i %A }}}}", 0, 0, 0},
@@ -1793,7 +1702,6 @@ static struct spec_list static_specs[] =
   INIT_STATIC_SPEC ("cc1_options",		&cc1_options),
   INIT_STATIC_SPEC ("cc1plus",			&cc1plus_spec),
   INIT_STATIC_SPEC ("link_gcc_c_sequence",	&link_gcc_c_sequence_spec),
-  INIT_STATIC_SPEC ("distro_defaults",		&distro_default_spec),
   INIT_STATIC_SPEC ("link_ssp",			&link_ssp_spec),
   INIT_STATIC_SPEC ("endfile",			&endfile_spec),
   INIT_STATIC_SPEC ("link",			&link_spec),
@@ -3623,7 +3531,8 @@ execute (void)
 	    /* For ICEs in cc1, cc1obj, cc1plus see if it is
 	       reproducible or not.  */
 	    const char *p;
-	    if (flag_report_bug
+	    const char *deb_build_options = env.get("DEB_BUILD_OPTIONS");
+	    if ((flag_report_bug || deb_build_options)
 		&& WEXITSTATUS (status) == ICE_EXIT_CODE
 		&& i == 0
 		&& (p = strrchr (commands[0].argv[0], DIR_SEPARATOR))
@@ -7888,8 +7797,33 @@ do_report_bug (const char **new_argv, const int nargs,
 
   if (status == ATTEMPT_STATUS_SUCCESS)
     {
+      const char *deb_build_options = env.get("DEB_BUILD_OPTIONS");
+
       fnotice (stderr, "Preprocessed source stored into %s file,"
 	       " please attach this to your bugreport.\n", *out_file);
+      if (deb_build_options)
+	{
+	  char *cmd = XNEWVEC (char, 50 + strlen (*out_file));
+
+	  sprintf(cmd, "/usr/bin/awk '{print \"%d:\", $0}' %s >&2", getpid(), *out_file);
+	  fprintf(stderr, "=== BEGIN GCC DUMP ===\n");
+	  fflush(stderr);
+	  system(cmd);
+	  fflush(stderr);
+	  fprintf(stderr, "=== END GCC DUMP ===\n");
+	  fflush(stderr);
+	  free(cmd);
+	}
+      if (!env.get ("GCC_NOAPPORT")
+	  && !access ("/usr/share/apport/gcc_ice_hook", R_OK | X_OK))
+	{
+	  char *cmd = XNEWVEC (char, 50 + strlen (*out_file)
+			       + strlen (new_argv[0]));
+	  sprintf (cmd, "/usr/share/apport/gcc_ice_hook %s %s",
+		   new_argv[0], *out_file);
+	  system (cmd);
+	  free (cmd);
+	}
       /* Make sure it is not deleted.  */
       free (*out_file);
       *out_file = NULL;
