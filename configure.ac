@@ -3290,7 +3290,7 @@ target_configargs="$target_configargs ${tbaseargs}"
 # native.  However, it would be better to use other mechanisms to make the
 # sorts of decisions they want to make on this basis.  Please consider
 # this option to be deprecated.  FIXME.
-if test x${is_cross_compiler} = xyes ; then
+if test x${is_cross_compiler} = xyes || test x${FORCE_CROSS_LAYOUT} = xyes; then
   target_configargs="--with-cross-host=${host_noncanonical} ${target_configargs}"
 fi
 
@@ -3431,7 +3431,7 @@ fi
 # being built; programs in there won't even run.
 if test "${build}" = "${host}" && test -d ${srcdir}/gcc; then
   # Search for pre-installed headers if nothing else fits.
-  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -B$(build_tooldir)/bin/ -B$(build_tooldir)/lib/ -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include'
+  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -B$(build_tooldir)/bin/ -B$(build_tooldir)/lib/ -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include -isystem $(CURDIR)/sys-include'
 fi
 
 if test "x${use_gnu_ld}" = x &&
@@ -3793,6 +3793,7 @@ compare_exclusions="$compare_exclusions | gcc/m2/gm2-compiler-boot/SYSTEM*"
 compare_exclusions="$compare_exclusions | gcc/m2/gm2version*"
 case "$target" in
   hppa*64*-*-hpux*) ;;
+  mipsel-*linux-gnu) compare_exclusions="$compare_exclusions | gcc/rust/rust-macro-builtins.o | gcc/rust/rust-session-manager.o | gcc/rust/rust-cfg-parser.o | gcc/rust/rust-lex.o" ;;
   powerpc*-ibm-aix*) compare_exclusions="$compare_exclusions | *libgomp*\$(objext)" ;;
 esac
 AC_SUBST(compare_exclusions)

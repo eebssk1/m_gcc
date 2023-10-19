@@ -47,6 +47,7 @@ AM_CPPFLAGS = -I $(srcdir)/runtime $(LIBFFIINCS) $(PTHREAD_CFLAGS)
 ACLOCAL_AMFLAGS = -I ./config -I ../config
 
 AM_CFLAGS = -fexceptions -fnon-call-exceptions \
+	-fno-stack-protector \
 	$(SPLIT_STACK) $(WARN_CFLAGS) \
 	$(STRINGOPS_FLAG) $(HWCAP_CFLAGS) $(OSCFLAGS) \
 	-I $(srcdir)/../libgcc -I $(srcdir)/../libbacktrace \
@@ -922,7 +923,7 @@ BUILDGOX = \
 	$(SHELL) $(srcdir)/mvifdiff.sh $@.tmp `echo $@ | sed -e 's/s-gox/gox/'`
 
 GOTESTFLAGS =
-GOBENCH = 
+GOBENCH =
 
 # Check a package.
 CHECK = \
@@ -943,6 +944,12 @@ CHECK = \
 	$(MKDIR_P) $(@D); \
 	rm -f $@-testsum $@-testlog; \
 	files=`$(SHELL) $(srcdir)/match.sh --goarch=$(GOARCH) --goos=$(GOOS) --srcdir=$(srcdir)/go/$(@D) --extrafiles="$(extra_go_files_$(subst .,_,$(subst /,_,$(@D))))" $(matchargs_$(subst /,_,$(@D)))`; \
+	run_check=yes; \
+	MULTILIBDIR="$(MULTILIBDIR)"; \
+	case "$$MULTILIBDIR" in /64|/x32) \
+	  echo "$$RUNTESTFLAGS" | grep -q "$${MULTILIBDIR\#/*}" || run_check=; \
+	esac; \
+	if test "$$run_check" = "yes"; then \
 	if test "$(USE_DEJAGNU)" = "yes"; then \
 	  $(SHELL) $(srcdir)/testsuite/gotest --goarch=$(GOARCH) --goos=$(GOOS) --dejagnu=yes --basedir=$(srcdir) --srcdir=$(srcdir)/go/$(@D) --pkgpath="$(@D)" --pkgfiles="$$files" --testname="$(@D)" $(GOTESTFLAGS); \
 	elif test "$(GOBENCH)" != ""; then \
@@ -958,6 +965,7 @@ CHECK = \
 	    echo "FAIL: $(@D)" > $@-testsum; \
 	    exit 1; \
 	  fi; \
+	fi; \
 	fi
 
 # Build all packages before checking any.
@@ -1357,7 +1365,9 @@ mostlyclean-local:
 	find . -name '*-testsum' -print | xargs rm -f
 	find . -name '*-testlog' -print | xargs rm -f
 
-CLEANFILES = *.go *.c s-* libgo.sum libgo.log runtime.inc
+CLEANFILES = *.go *.c s-* libgo.sum libgo.log runtime.inc \
+	*.dep */*.dep */*/*.dep */*/*/*.dep */*/*.dep */*/*/*/*.dep \
+	*/*/*/*/*/*.dep
 
 clean-local:
 	find . -name '*.la' -print | xargs $(LIBTOOL) --mode=clean rm -f
