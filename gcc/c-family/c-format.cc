@@ -1173,9 +1173,10 @@ void
 check_function_format (const_tree fn, tree attrs, int nargs,
 		       tree *argarray, vec<location_t> *arglocs)
 {
-  tree a;
+  tree a, aa;
 
   tree atname = get_identifier ("format");
+  bool skipped_default_format = false;
 
   /* See if this function has any format attributes.  */
   for (a = attrs; a; a = TREE_CHAIN (a))
@@ -1186,6 +1187,32 @@ check_function_format (const_tree fn, tree attrs, int nargs,
 	  function_format_info info;
 	  decode_format_attr (fn, atname, TREE_VALUE (a), &info,
 			      /*validated=*/true);
+
+	  /* Mingw32 targets have traditionally used ms_printf format for the
+	     printf function, and this format is built in GCC. But nowadays,
+	     if mingw-w64 is configured to target UCRT, the printf function
+	     uses the gnu_printf format (specified in the stdio.h header). This
+	     causes GCC to check both formats, which means that GCC would
+	     warn twice about the same issue when both formats are violated,
+	     e.g. for %lu used to print long long unsigned.
+
+	     Hence, if there are multiple format specifiers, we skip the first
+	     one. See PR 95130 (but note that GCC ms_printf already supports
+	     %llu) and PR 92292.  */
+
+	  if (!skipped_default_format && fn && TREE_CODE (fn) == FUNCTION_DECL)
+	    {
+	      for(aa = TREE_CHAIN (a); aa; aa = TREE_CHAIN (aa))
+		if (is_attribute_p ("format", get_attribute_name (aa))
+		    && fndecl_built_in_p (fn, BUILT_IN_NORMAL))
+		  {
+		    skipped_default_format = true;
+		    break;
+		  }
+	      if (skipped_default_format)
+		continue;
+	    }
+
 	  if (warn_format)
 	    {
 	      /* FIXME: Rewrite all the internal functions in this file
