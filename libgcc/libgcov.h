@@ -51,6 +51,12 @@
 #define HAVE_SYS_MMAN_H 0
 #endif
 
+/* MingW does not have it either. */
+#if defined(_WIN32)
+#undef HAVE_SYS_MMAN_H
+#define HAVE_SYS_MMAN_H 0
+#endif
+
 #if HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
