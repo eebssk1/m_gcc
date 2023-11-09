@@ -16668,7 +16668,7 @@
 	     (match_dup 4))]
 	     UNSPEC_BLENDV))]
 {
-  if (INTVAL (operands[5]) == 1)
+  if (INTVAL (operands[5]) == 5)
     std::swap (operands[1], operands[2]);
   operands[3] = gen_lowpart (<MODE>mode, operands[3]);
 })
@@ -16698,7 +16698,7 @@
 	     (match_dup 4))]
 	     UNSPEC_BLENDV))]
 {
-  if (INTVAL (operands[5]) == 1)
+  if (INTVAL (operands[5]) == 5)
     std::swap (operands[1], operands[2]);
 })
 
