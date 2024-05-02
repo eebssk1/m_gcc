@@ -453,7 +453,7 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign info-in-builddir
 @BUILD_LIBQUADMATH_TRUE@ACLOCAL_AMFLAGS = -I .. -I ../config
 @BUILD_LIBQUADMATH_TRUE@AM_CPPFLAGS = -I $(top_srcdir)/../include
-@BUILD_LIBQUADMATH_TRUE@AM_CFLAGS = $(XCFLAGS)
+@BUILD_LIBQUADMATH_TRUE@AM_CFLAGS = $(XCFLAGS) -floop-nest-optimize
 @BUILD_LIBQUADMATH_TRUE@gcc_version := $(shell @get_gcc_base_ver@ $(top_srcdir)/../gcc/BASE-VER)
 @BUILD_LIBQUADMATH_TRUE@@LIBQUAD_USE_SYMVER_FALSE@version_arg = 
 @BUILD_LIBQUADMATH_TRUE@@LIBQUAD_USE_SYMVER_GNU_TRUE@@LIBQUAD_USE_SYMVER_TRUE@version_arg = -Wl,--version-script=$(srcdir)/quadmath.map
