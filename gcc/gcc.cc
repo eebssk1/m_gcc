@@ -973,8 +973,15 @@ proper position among the other output files.  */
 
 #ifndef LINK_SSP_SPEC
 #ifdef TARGET_LIBC_PROVIDES_SSP
+#if DEFAULT_LIBC == LIBC_MUSL
+/* When linking without -fstack-protector-something but including objects that
+   were built with -fstack-protector-something, calls to __stack_chk_fail_local
+   can be emitted. Thus -lssp_nonshared must be linked unconditionally.  */
+#define LINK_SSP_SPEC "-lssp_nonshared"
+#else
 #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all" \
 		       "|fstack-protector-strong|fstack-protector-explicit:}"
+#endif
 #else
 #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all" \
 		       "|fstack-protector-strong|fstack-protector-explicit" \
@@ -2802,6 +2809,7 @@ for_each_path (const struct path_prefix *paths,
 	{
 	  len = paths->max_len + extra_space + 1;
 	  len += MAX (MAX (suffix_len, multi_os_dir_len), multiarch_len);
+	  len += MAX (strlen(DEFAULT_REAL_TARGET_MACHINE), multiarch_len) + 2; /* triplet prefix for as, ld.  */
 	  path = XNEWVEC (char, len);
 	}
 
@@ -3015,6 +3023,24 @@ file_at_path (char *path, void *data)
   struct file_at_path_info *info = (struct file_at_path_info *) data;
   size_t len = strlen (path);
 
+  /* search for the <triplet>-as / -ld first.  */
+  if (! strcmp (info->name, "as") || ! strcmp (info->name, "ld"))
+    {
+      struct file_at_path_info prefix_info = *info;
+      char *prefixed_name = XNEWVEC (char, info->name_len + 2
+				     + strlen (DEFAULT_REAL_TARGET_MACHINE));
+      strcpy (prefixed_name, DEFAULT_REAL_TARGET_MACHINE);
+      strcat (prefixed_name, "-");
+      strcat (prefixed_name, info->name);
+      prefix_info.name = (const char *) prefixed_name;
+      prefix_info.name_len = strlen (prefixed_name);
+      if (file_at_path (path, &prefix_info))
+	{
+	  XDELETEVEC (prefixed_name);
+	  return path;
+	}
+      XDELETEVEC (prefixed_name);
+    }
   memcpy (path + len, info->name, info->name_len);
   len += info->name_len;
 

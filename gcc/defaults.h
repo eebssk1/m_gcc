@@ -1444,7 +1444,7 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 /* When generating dwarf info, the default standard version we'll honor
    and advertise in absence of -gdwarf-<N> on the command line.  */
 #ifndef DWARF_VERSION_DEFAULT
-#define DWARF_VERSION_DEFAULT 5
+#define DWARF_VERSION_DEFAULT 4
 #endif
 
 #ifndef USED_FOR_TARGET
