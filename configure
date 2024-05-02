@@ -10264,7 +10264,7 @@ case "$target" in
   x86_64-*mingw* | *-w64-mingw*)
   # MinGW-w64 does not use newlib, nor does it use winsup. It may,
   # however, use a symlink named 'mingw' in ${prefix} .
-    FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -L${prefix}/${target}/lib -L${prefix}/mingw/lib -isystem ${prefix}/${target}/include -isystem ${prefix}/mingw/include'
+    FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -L${prefix}/${target}/lib -L${prefix}/lib -isystem ${prefix}/${target}/include -isystem ${prefix}/include'
     ;;
   *-mingw*)
   # MinGW can't be handled as Cygwin above since it does not use newlib.
@@ -10287,7 +10287,7 @@ fi
 # being built; programs in there won't even run.
 if test "${build}" = "${host}" && test -d ${srcdir}/gcc; then
   # Search for pre-installed headers if nothing else fits.
-  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -B$(build_tooldir)/bin/ -B$(build_tooldir)/lib/ -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include'
+  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -B$(build_tooldir)/bin/ -B$(build_tooldir)/lib/ -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include -isystem $(CURDIR)/sys-include'
 fi
 
 if test "x${use_gnu_ld}" = x &&
