@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_INIT(package-unused, version-unused, libsanitizer)
+AC_INIT(package-unused, version-unused,, libsanitizer)
 AC_CONFIG_SRCDIR([include/sanitizer/common_interface_defs.h])
 
 AM_ENABLE_MULTILIB(, ..)
