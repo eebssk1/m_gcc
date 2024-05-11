@@ -25,20 +25,6 @@ namespace Rust {
 namespace HIR {
 
 void
-mkdir_wrapped (const std::string &dirname)
-{
-  int ret;
-#ifdef _WIN32
-  ret = _mkdir (dirname.c_str ());
-#elif unix
-  ret = mkdir (dirname.c_str (), 0775);
-#elif __APPLE__
-  ret = mkdir (dirname.c_str (), 0775);
-#endif
-  (void) ret;
-}
-
-void
 dump_function_bir (const std::string &filename, BIR::Function &func,
 		   const std::string &name)
 {
@@ -61,7 +47,7 @@ BorrowChecker::go (HIR::Crate &crate)
 
   if (enable_dump_bir)
     {
-      mkdir_wrapped ("bir_dump");
+      mkdir ("bir_dump", 0755);
       auto mappings = Analysis::Mappings::get ();
       bool ok
 	= mappings->get_crate_name (crate.get_mappings ().get_crate_num (),

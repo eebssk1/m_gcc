@@ -30,7 +30,7 @@ along with GCC; see the file COPYING3.  If not see
 #define TARGET_SUBTARGET_DEFAULT \
 	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
 	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE \
-	 | MASK_MS_BITFIELD_LAYOUT)
+	 | MASK_MS_BITFIELD_LAYOUT | MASK_NO_ALIGN_VECTOR_INSN)
 
 #ifndef TARGET_USING_MCFGTHREAD
 #define TARGET_USING_MCFGTHREAD  0
@@ -225,7 +225,11 @@ along with GCC; see the file COPYING3.  If not see
 
 /* Override startfile prefix defaults.  */
 #ifndef STANDARD_STARTFILE_PREFIX_1
+#ifndef _WIN32
 #define STANDARD_STARTFILE_PREFIX_1 "/mingw/lib/"
+#else
+#define STANDARD_STARTFILE_PREFIX_1 "C:/msys64/mingw64/lib/"
+#endif
 #endif
 #ifndef STANDARD_STARTFILE_PREFIX_2
 #define STANDARD_STARTFILE_PREFIX_2 ""
@@ -234,7 +238,11 @@ along with GCC; see the file COPYING3.  If not see
 /* For native mingw-version we need to take care that NATIVE_SYSTEM_HEADER_DIR
    macro contains POSIX-style path.  See bug 52947.  */
 #undef NATIVE_SYSTEM_HEADER_DIR
+#ifndef _WIN32
 #define NATIVE_SYSTEM_HEADER_DIR "/mingw/include"
+#else
+#define NATIVE_SYSTEM_HEADER_DIR "C:/msys64/mingw64/include/"
+#endif
 
 /* Output STRING, a string representing a filename, to FILE.
    We canonicalize it to be in Unix format (backslashes are replaced
