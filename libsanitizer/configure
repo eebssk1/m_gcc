@@ -588,7 +588,7 @@ MAKEFLAGS=
 
 # Identity of this package.
 PACKAGE_NAME='package-unused'
-PACKAGE_TARNAME='package-unused'
+PACKAGE_TARNAME='libsanitizer'
 PACKAGE_VERSION='version-unused'
 PACKAGE_STRING='package-unused version-unused'
 PACKAGE_BUGREPORT='libsanitizer'
@@ -4783,7 +4783,7 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE='package-unused'
+ PACKAGE='libsanitizer'
  VERSION='version-unused'
 
 
