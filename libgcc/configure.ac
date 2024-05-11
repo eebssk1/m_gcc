@@ -115,7 +115,7 @@ AC_ARG_WITH(slibdir,
 [  --with-slibdir=DIR      shared libraries in DIR [LIBDIR]],
 slibdir="$with_slibdir",
 [if test "${version_specific_libs}" = yes; then
-  slibdir='$(libsubdir)'
+  slibdir='$(libdir)/gcc/$(target_noncanonical)/$(gcc_version)$(MULTISUBDIR)'
 elif test -n "$with_cross_host" && test x"$with_cross_host" != x"no"; then
   case ${with_toolexeclibdir} in
     no)
