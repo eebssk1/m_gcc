@@ -1887,9 +1887,8 @@ typedef struct gfc_symbol
      points to C and B's is NULL.  */
   struct gfc_common_head* common_head;
 
-  /* Make sure setup code for dummy arguments is generated in the correct
-     order.  */
-  int dummy_order;
+  /* Make sure initialization code is generated in the correct order.  */
+  int decl_order;
 
   gfc_namelist *namelist, *namelist_tail;
 

@@ -832,6 +832,19 @@ gfc_allocate_lang_decl (tree decl)
     DECL_LANG_SPECIFIC (decl) = ggc_cleared_alloc<struct lang_decl> ();
 }
 
+
+/* Determine order of two symbol declarations.  */
+
+static bool
+decl_order (gfc_symbol *sym1, gfc_symbol *sym2)
+{
+  if (sym1->decl_order > sym2->decl_order)
+    return true;
+  else
+    return false;
+}
+
+
 /* Remember a symbol to generate initialization/cleanup code at function
    entry/exit.  */
 

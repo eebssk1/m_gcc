@@ -98,9 +98,7 @@ const mstring dtio_procs[] =
 
 /* This is to make sure the backend generates setup code in the correct
    order.  */
-
-static int next_dummy_order = 1;
-
+static int next_decl_order = 1;
 
 gfc_namespace *gfc_current_ns;
 gfc_namespace *gfc_global_ns_list;
@@ -947,9 +945,8 @@ gfc_set_sym_referenced (gfc_symbol *sym)
 
   sym->attr.referenced = 1;
 
-  /* Remember which order dummy variables are accessed in.  */
-  if (sym->attr.dummy)
-    sym->dummy_order = next_dummy_order++;
+  /* Remember the declaration order.  */
+  sym->decl_order = next_decl_order++;
 }
 
 
