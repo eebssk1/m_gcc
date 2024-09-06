@@ -1074,6 +1074,12 @@ AC_ARG_WITH(specs,
   [CONFIGURE_SPECS=$withval],
   [CONFIGURE_SPECS=]
 )
+AC_ARG_WITH(specs-file,
+  [AS_HELP_STRING([--with-specs-file=SPECS],
+                  [add SPECS content to driver command-line processing])],
+  [CONFIGURE_SPECS=`cat $withval`],
+  [CONFIGURE_SPECS=]
+)
 AC_SUBST(CONFIGURE_SPECS)
 
 ACX_PKGVERSION([GCC])

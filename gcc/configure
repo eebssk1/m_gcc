@@ -995,6 +995,7 @@ with_dwarf2
 enable_shared
 enable_gcov
 with_specs
+with_specs_file
 with_pkgversion
 with_bugurl
 with_documentation_root_url
@@ -1872,6 +1873,7 @@ Optional Packages:
   --with-dwarf2           force the default debug format to be DWARF 2 (or
                           later)
   --with-specs=SPECS      add SPECS to driver command-line processing
+  --with-specs-file=SPECS add SPECS content to driver command-line processing
   --with-pkgversion=PKG   Use PKG in the version string in place of "GCC"
   --with-bugurl=URL       Direct users to URL to report a bug
   --with-documentation-root-url=URL
@@ -8168,6 +8170,15 @@ fi
 # Check whether --with-specs was given.
 if test "${with_specs+set}" = set; then :
   withval=$with_specs; CONFIGURE_SPECS=$withval
+else
+  CONFIGURE_SPECS=
+
+fi
+
+
+# Check whether --with-specs-file was given.
+if test "${with_specs_file+set}" = set; then :
+  withval=$with_specs_file; CONFIGURE_SPECS=`cat "$withval"`
 else
   CONFIGURE_SPECS=
 
