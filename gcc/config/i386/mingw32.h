@@ -230,7 +230,7 @@ along with GCC; see the file COPYING3.  If not see
 #ifndef _WIN32
 #define STANDARD_STARTFILE_PREFIX_1 "/mingw/lib/"
 #else
-#define STANDARD_STARTFILE_PREFIX_1 "C:/msys64/mingw64/lib/"
+#define STANDARD_STARTFILE_PREFIX_1 "C:/msys64/ucrt64/lib/"
 #endif
 #endif
 #ifndef STANDARD_STARTFILE_PREFIX_2
@@ -243,7 +243,7 @@ along with GCC; see the file COPYING3.  If not see
 #ifndef _WIN32
 #define NATIVE_SYSTEM_HEADER_DIR "/mingw/include"
 #else
-#define NATIVE_SYSTEM_HEADER_DIR "C:/msys64/mingw64/include/"
+#define NATIVE_SYSTEM_HEADER_DIR "C:/msys64/ucrt64/include/"
 #endif
 
 /* Output STRING, a string representing a filename, to FILE.
