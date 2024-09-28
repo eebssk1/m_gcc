@@ -111,6 +111,7 @@ case "$original" in
     fi
     ;;
   *)
-    exec $original ${1+"$@"}
+    $original ${1+"$@"}
+    exit $?
     ;;
 esac
