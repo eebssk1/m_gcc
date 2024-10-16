@@ -1176,7 +1176,10 @@ install-shared:
 	chmod 644 $(DESTDIR)$(inst_libdir)/libgcc_eh.a
 	$(RANLIB) $(DESTDIR)$(inst_libdir)/libgcc_eh.a
 
-	$(if $(findstring /$(gcc_version),$(shlib_slibdir)), $(eval MULTIOSSUBDIR =))
+	$(info MULTIOSSUBDIR before transform : $(MULTIOSSUBDIR))
+	$(if $(findstring lib,$(MULTIOSSUBDIR)), $(eval MULTIOSSUBDIR =))
+	$(info MULTIOSSUBDIR after transform : $(MULTIOSSUBDIR))
+
 	$(subst @multilib_dir@,$(MULTIDIR),$(subst \
 		@shlib_base_name@,libgcc_s,$(subst \
 		@shlib_slibdir_qual@,$(MULTIOSSUBDIR),$(SHLIB_INSTALL))))
