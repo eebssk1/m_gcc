@@ -3312,7 +3312,7 @@ ix86_option_override_internal (bool main_args_p,
   /* Fully masking the main or the epilogue vectorized loop is not
      profitable generally so leave it disabled until we get more
      fine grained control & costing.  */
-  SET_OPTION_IF_UNSET (opts, opts_set, param_vect_partial_vector_usage, 0);
+  SET_OPTION_IF_UNSET (opts, opts_set, param_vect_partial_vector_usage, 1);
 
   return true;
 }
