@@ -442,7 +442,7 @@ Common Joined UInteger Var(param_lra_max_considered_reload_pseudos) Init(526) Pa
 The max number of reload pseudos which are considered during spilling a non-reload pseudo.
 
 -param=lto-max-partition=
-Common Joined UInteger Var(param_max_partition_size) Init(1085000) Param
+Common Joined UInteger Var(param_max_partition_size) Init(1036000) Param
 Maximal size of a partition for LTO (in estimated instructions).
 
 -param=lto-max-streaming-parallelism=
@@ -450,11 +450,11 @@ Common Joined UInteger Var(param_max_lto_streaming_parallelism) Init(28) Integer
 maximal number of LTO partitions streamed in parallel.
 
 -param=lto-min-partition=
-Common Joined UInteger Var(param_min_partition_size) Init(16920) Param
+Common Joined UInteger Var(param_min_partition_size) Init(16980) Param
 Minimal size of a partition for LTO (in estimated instructions).
 
 -param=lto-partitions=
-Common Joined UInteger Var(param_lto_partitions) Init(36) IntegerRange(1, 65536) Param
+Common Joined UInteger Var(param_lto_partitions) Init(54) IntegerRange(1, 65536) Param
 Number of partitions the program should be split to.
 
 -param=max-average-unrolled-insns=
@@ -582,7 +582,7 @@ Common Joined UInteger Var(param_max_inline_recursive_depth_auto) Optimization I
 The maximum depth of recursive inlining for non-inline functions.
 
 -param=max-isl-operations=
-Common Joined UInteger Var(param_max_isl_operations) Init(580000) Param Optimization
+Common Joined UInteger Var(param_max_isl_operations) Init(536000) Param Optimization
 Maximum number of isl operations, 0 means unlimited.
 
 -param=max-iterations-computation-cost=
@@ -941,7 +941,7 @@ Common Joined UInteger Var(param_scev_max_expr_size) Init(112) Param Optimizatio
 Bound on size of expressions used in the scalar evolutions analyzer.
 
 -param=sched-autopref-queue-depth=
-Common Joined UInteger Var(param_sched_autopref_queue_depth) Init(1) Param Optimization
+Common Joined UInteger Var(param_sched_autopref_queue_depth) Init(2) Param Optimization
 Hardware autoprefetcher scheduler model control flag.  Number of lookahead cycles the model looks into, at '0' only enable instruction sorting heuristic.  Disabled by default.
 
 -param=sched-mem-true-dep-cost=

@@ -813,7 +813,7 @@ default_options_optimization (struct gcc_options *opts,
   /* Track fields in field-sensitive alias analysis.  */
   if (opt2)
     SET_OPTION_IF_UNSET (opts, opts_set, param_max_fields_for_field_sensitive,
-			 142);
+			 133);
 
   if (opts->x_optimize_size)
     /* We want to crossjump as much as possible.  */
