@@ -536,6 +536,8 @@ lto_balanced_map (int n_lto_partitions, int max_partition_size)
 		 "than max partition size");
 
   partition_size = total_size / n_lto_partitions;
+  if (partition_size > max_partition_size)
+    fprintf(stdout, "Note: Actual partition size " "%" PRId64 " exceeded max partition size " "%" PRId64 " !\n", partition_size, max_partition_size);
   if (partition_size < param_min_partition_size)
     partition_size = param_min_partition_size;
   npartitions = 1;

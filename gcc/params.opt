@@ -442,19 +442,19 @@ Common Joined UInteger Var(param_lra_max_considered_reload_pseudos) Init(526) Pa
 The max number of reload pseudos which are considered during spilling a non-reload pseudo.
 
 -param=lto-max-partition=
-Common Joined UInteger Var(param_max_partition_size) Init(1036000) Param
+Common Joined UInteger Var(param_max_partition_size) Init(564000) Param
 Maximal size of a partition for LTO (in estimated instructions).
 
 -param=lto-max-streaming-parallelism=
-Common Joined UInteger Var(param_max_lto_streaming_parallelism) Init(28) IntegerRange(1, 65536) Param
+Common Joined UInteger Var(param_max_lto_streaming_parallelism) Init(25) IntegerRange(1, 65536) Param
 maximal number of LTO partitions streamed in parallel.
 
 -param=lto-min-partition=
-Common Joined UInteger Var(param_min_partition_size) Init(16980) Param
+Common Joined UInteger Var(param_min_partition_size) Init(16800) Param
 Minimal size of a partition for LTO (in estimated instructions).
 
 -param=lto-partitions=
-Common Joined UInteger Var(param_lto_partitions) Init(54) IntegerRange(1, 65536) Param
+Common Joined UInteger Var(param_lto_partitions) Init(143) IntegerRange(1, 65536) Param
 Number of partitions the program should be split to.
 
 -param=max-average-unrolled-insns=
