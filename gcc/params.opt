@@ -174,11 +174,11 @@ Common Joined UInteger Var(param_graphite_allow_codegen_errors) IntegerRange(0, 
 Whether codegen errors should be ICEs when -fchecking.
 
 -param=graphite-max-arrays-per-scop=
-Common Joined UInteger Var(param_graphite_max_arrays_per_scop) Init(112) Param Optimization
+Common Joined UInteger Var(param_graphite_max_arrays_per_scop) Init(116) Param Optimization
 Maximum number of arrays per SCoP.
 
 -param=graphite-max-nb-scop-params=
-Common Joined UInteger Var(param_graphite_max_nb_scop_params) Init(12) Param Optimization
+Common Joined UInteger Var(param_graphite_max_nb_scop_params) Init(15) Param Optimization
 Maximum number of parameters in a SCoP.
 
 -param=hardcfr-max-blocks=
@@ -406,7 +406,7 @@ Common Joined UInteger Var(param_logical_op_non_short_circuit) Init(-1) IntegerR
 True if a non-short-circuit operation is optimal.
 
 -param=loop-block-tile-size=
-Common Joined UInteger Var(param_loop_block_tile_size) Init(32) Param Optimization
+Common Joined UInteger Var(param_loop_block_tile_size) Init(44) Param Optimization
 Size of tiles for loop blocking.
 
 -param=loop-interchange-max-num-stmts=
@@ -582,7 +582,7 @@ Common Joined UInteger Var(param_max_inline_recursive_depth_auto) Optimization I
 The maximum depth of recursive inlining for non-inline functions.
 
 -param=max-isl-operations=
-Common Joined UInteger Var(param_max_isl_operations) Init(536000) Param Optimization
+Common Joined UInteger Var(param_max_isl_operations) Init(692000) Param Optimization
 Maximum number of isl operations, 0 means unlimited.
 
 -param=max-iterations-computation-cost=
