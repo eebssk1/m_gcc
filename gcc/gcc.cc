@@ -789,8 +789,11 @@ proper position among the other output files.  */
 #ifdef LIBASAN_EARLY_SPEC
 #define LIBASAN_SPEC STATIC_LIBASAN_LIBS
 #elif defined(HAVE_LD_STATIC_DYNAMIC)
-#define LIBASAN_SPEC "%{static-libasan:" LD_STATIC_OPTION \
-		     "} -lasan %{static-libasan:" LD_DYNAMIC_OPTION "}" \
+#define LIBASAN_SPEC "%{static-libasan:" LD_STATIC_OPTION "}" \
+		     " %{!static-libasan:--push-state --no-as-needed}" \
+		     " -lasan " \
+		     " %{static-libasan:" LD_DYNAMIC_OPTION "}" \
+		     " %{!static-libasan:--pop-state}" \
 		     STATIC_LIBASAN_LIBS
 #else
 #define LIBASAN_SPEC "-lasan" STATIC_LIBASAN_LIBS
@@ -825,8 +828,11 @@ proper position among the other output files.  */
 #ifdef LIBTSAN_EARLY_SPEC
 #define LIBTSAN_SPEC STATIC_LIBTSAN_LIBS
 #elif defined(HAVE_LD_STATIC_DYNAMIC)
-#define LIBTSAN_SPEC "%{static-libtsan:" LD_STATIC_OPTION \
-		     "} -ltsan %{static-libtsan:" LD_DYNAMIC_OPTION "}" \
+#define LIBTSAN_SPEC "%{static-libtsan:" LD_STATIC_OPTION "}" \
+		     " %{!static-libtsan:--push-state --no-as-needed}" \
+		     " -ltsan " \
+		     " %{static-libtsan:" LD_DYNAMIC_OPTION "}" \
+		     " %{!static-libtsan:--pop-state}" \
 		     STATIC_LIBTSAN_LIBS
 #else
 #define LIBTSAN_SPEC "-ltsan" STATIC_LIBTSAN_LIBS
@@ -843,8 +849,11 @@ proper position among the other output files.  */
 #ifdef LIBLSAN_EARLY_SPEC
 #define LIBLSAN_SPEC STATIC_LIBLSAN_LIBS
 #elif defined(HAVE_LD_STATIC_DYNAMIC)
-#define LIBLSAN_SPEC "%{static-liblsan:" LD_STATIC_OPTION \
-		     "} -llsan %{static-liblsan:" LD_DYNAMIC_OPTION "}" \
+#define LIBLSAN_SPEC "%{static-liblsan:" LD_STATIC_OPTION "}" \
+		     " %{!static-liblsan:--push-state --no-as-needed}" \
+		     " -llsan " \
+		     " %{static-liblsan:" LD_DYNAMIC_OPTION "}" \
+		     " %{!static-liblsan:--pop-state}" \
 		     STATIC_LIBLSAN_LIBS
 #else
 #define LIBLSAN_SPEC "-llsan" STATIC_LIBLSAN_LIBS
@@ -859,8 +868,11 @@ proper position among the other output files.  */
 #define STATIC_LIBUBSAN_LIBS \
   " %{static-libubsan|static:%:include(libsanitizer.spec)%(link_libubsan)}"
 #ifdef HAVE_LD_STATIC_DYNAMIC
-#define LIBUBSAN_SPEC "%{static-libubsan:" LD_STATIC_OPTION \
-		     "} -lubsan %{static-libubsan:" LD_DYNAMIC_OPTION "}" \
+#define LIBUBSAN_SPEC "%{static-libubsan:" LD_STATIC_OPTION "}" \
+		     " %{!static-libubsan:--push-state --no-as-needed}" \
+		     " -lubsan " \
+		     " %{static-libubsan:" LD_DYNAMIC_OPTION "}" \
+		     " %{!static-libubsan:--pop-state}" \
 		     STATIC_LIBUBSAN_LIBS
 #else
 #define LIBUBSAN_SPEC "-lubsan" STATIC_LIBUBSAN_LIBS
