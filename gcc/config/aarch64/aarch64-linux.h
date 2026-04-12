@@ -35,6 +35,7 @@
 #define CPP_SPEC "%{pthread:-D_REENTRANT}"
 
 #define LINUX_TARGET_LINK_SPEC  "%{h*}		\
+   %{!fsanitize=*:--as-needed}			\
    %{static:-Bstatic}				\
    %{shared:-shared}				\
    %{symbolic:-Bsymbolic}			\

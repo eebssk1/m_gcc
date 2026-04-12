@@ -63,6 +63,7 @@
 #define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
 
 #define LINUX_TARGET_LINK_SPEC  "%{h*} \
+   %{!fsanitize=*:--as-needed} \
    %{static:-Bstatic} \
    %{shared:-shared} \
    %{symbolic:-Bsymbolic} \
