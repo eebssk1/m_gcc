@@ -1850,7 +1850,11 @@ do-clean: clean-stage[+id+]
 	if [ -f .bad_compare ]; then \
 	  echo "Bootstrap comparison failure!"; \
 	  cat .bad_compare; \
-	  exit 1; \
+	  if [ -n "$$IGNORE_CMP_FAIL" ]; then \
+	    echo "Comparison failure ignored !!"; \
+	  else \
+	    exit 1; \
+	  fi; \
 	else \
 	  echo Comparison successful.; \
 	fi; \
