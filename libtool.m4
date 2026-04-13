@@ -6685,6 +6685,26 @@ if AC_TRY_EVAL(ac_compile); then
     esac
   done
 
+  if test "$pre_test_object_deps_done" = no; then
+    #mangled, try fix!
+    _LT_TAGVAR(predep_objects, $1)=""
+    _LT_TAGVAR(postdep_objects, $1)=""
+    _LT_TAGVAR(postdeps, $1)=""
+    for p in `eval "$output_verbose_link_cmd"`; do
+      case $p in
+        *crti* | *crtbegin*)
+          _LT_TAGVAR(predep_objects, $1)="$_LT_TAGVAR(predep_objects, $1) $p"
+        ;;
+        *crtend* | *crtn*)
+          _LT_TAGVAR(postdep_objects, $1)="$_LT_TAGVAR(postdep_objects, $1) $p"
+        ;;
+        -l*)
+          _LT_TAGVAR(postdeps, $1)="${_LT_TAGVAR(postdeps, $1)} ${p}"
+        ;;
+      esac
+    done
+  fi
+
   # Clean up.
   rm -f a.out a.exe
 else
