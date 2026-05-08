@@ -2204,7 +2204,7 @@ else
 	# Clearing GMPINC is necessary to prevent host headers being
 	# used by the build compiler.  Defining GENERATOR_FILE stops
 	# system.h from including gmp.h.
-	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD}" \
+	CC="${CC_FOR_BUILD}" CFLAGS="${CFLAGS_FOR_BUILD} -DGENERATOR_FILE" \
 	CXX="${CXX_FOR_BUILD}" CXXFLAGS="${CXXFLAGS_FOR_BUILD}" \
 	LD="${LD_FOR_BUILD}" LDFLAGS="${LDFLAGS_FOR_BUILD}" \
 	GMPINC="" CPPFLAGS="${CPPFLAGS_FOR_BUILD} -DGENERATOR_FILE" \
@@ -2568,14 +2568,14 @@ SYSTEM_HEADER_DIR='$(NATIVE_SYSTEM_HEADER_DIR)'	AC_SUBST(SYSTEM_HEADER_DIR)
 BUILD_SYSTEM_HEADER_DIR=$SYSTEM_HEADER_DIR	AC_SUBST(BUILD_SYSTEM_HEADER_DIR)
 
 if test x$host != x$target || test "x$TARGET_SYSTEM_ROOT" != x ||
-   test x$build != x$host || test "x$with_build_sysroot" != x; then
+   test x$build != x$host || test "x$with_build_sysroot" != x || test x$FORCE_CROSS_LAYOUT = xyes; then
   if test "x$with_build_sysroot" != x; then
     BUILD_SYSTEM_HEADER_DIR=$with_build_sysroot'$${sysroot_headers_suffix}$(NATIVE_SYSTEM_HEADER_DIR)'
   else
     BUILD_SYSTEM_HEADER_DIR='$(CROSS_SYSTEM_HEADER_DIR)'
   fi
 
-  if test x$host != x$target
+  if test x$host != x$target || test x$FORCE_CROSS_LAYOUT = xyes
   then
     CROSS="-DCROSS_DIRECTORY_STRUCTURE"
     ALL=all.cross
@@ -7513,14 +7513,14 @@ AC_SUBST_FILE(language_hooks)
 
 # Echo link setup.
 if test x${build} = x${host} ; then
-  if test x${host} = x${target} ; then
+  if test x${host} = x${target} && test x$FORCE_CROSS_LAYOUT != xyes ; then
     echo "Links are now set up to build a native compiler for ${target}." 1>&2
   else
     echo "Links are now set up to build a cross-compiler" 1>&2
     echo " from ${host} to ${target}." 1>&2
   fi
 else
-  if test x${host} = x${target} ; then
+  if test x${host} = x${target} && test x$FORCE_CROSS_LAYOUT != xyes ; then
     echo "Links are now set up to build (on ${build}) a native compiler" 1>&2
     echo " for ${target}." 1>&2
   else

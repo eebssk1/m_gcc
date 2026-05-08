@@ -1019,8 +1019,15 @@ proper position among the other output files.  */
 
 #ifndef LINK_SSP_SPEC
 #ifdef TARGET_LIBC_PROVIDES_SSP
+#if DEFAULT_LIBC == LIBC_MUSL
+/* When linking without -fstack-protector-something but including objects that
+   were built with -fstack-protector-something, calls to __stack_chk_fail_local
+   can be emitted. Thus -lssp_nonshared must be linked unconditionally.  */
+#define LINK_SSP_SPEC "-lssp_nonshared"
+#else
 #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all" \
 		       "|fstack-protector-strong|fstack-protector-explicit:}"
+#endif
 #else
 #define LINK_SSP_SPEC "%{fstack-protector|fstack-protector-all" \
 		       "|fstack-protector-strong|fstack-protector-explicit" \
@@ -1612,6 +1619,9 @@ struct path_prefix
 /* List of prefixes to try when looking for executables.  */
 
 static struct path_prefix exec_prefixes = { 0, 0, "exec" };
+
+/* Copied from collect2.cc, a prefix list from the PATH variable.  */
+static struct path_prefix path_prefixes;
 
 /* List of prefixes to try when looking for startup (crt0) files.  */
 
@@ -3109,6 +3119,8 @@ find_a_file (const struct path_prefix *pprefix, const char *name, int mode,
 static char*
 find_a_program (const char *name)
 {
+  char *progname;
+
   /* Do not search if default matches query. */
 
 #ifdef DEFAULT_ASSEMBLER
@@ -3131,7 +3143,37 @@ find_a_program (const char *name)
     return xstrdup (DEFAULT_WINDRES);
 #endif
 
-  return find_a_file (&exec_prefixes, name, X_OK, false);
+  progname = find_a_file (&exec_prefixes, name, X_OK, false);
+  if (progname)
+    {
+#if 0
+      fprintf (stderr, "find_a_program: %s --> %s\n",	name, progname);
+#endif
+      return progname;
+    }
+
+#ifndef ACCEL_COMPILER
+#ifndef CROSS_DIRECTORY_STRUCTURE
+  /* Search for the <triplet>-as / -ld instead of as / ld in PATH.
+     Doing that after the as / ld lookups, because these are used unversioned
+     during the build.  */
+  if (! strcmp (name, "as") || ! strcmp (name, "ld"))
+    {
+      char *prefixed_name = XNEWVEC (char, strlen("as") + 2
+				     + strlen (DEFAULT_REAL_TARGET_MACHINE));
+      strcpy (prefixed_name, DEFAULT_REAL_TARGET_MACHINE);
+      strcat (prefixed_name, "-");
+      strcat (prefixed_name, name);
+      /* Lookup in PATH, not exec_prefixes.  */
+      progname = find_a_file (&path_prefixes, prefixed_name, X_OK, false);
+#if 0
+      fprintf (stderr, "find_a_program: %s --> %s --> %s\n",
+	       name, prefixed_name, progname);
+#endif
+    }
+#endif
+#endif
+  return progname;
 }
 
 /* Ranking of prefixes in the sort list. -B prefixes are put before
@@ -3260,6 +3302,56 @@ add_sysrooted_hdrs_prefix (struct path_prefix *pprefix, const char *prefix,
 
   add_prefix (pprefix, prefix, component, priority,
 	      require_machine_suffix, os_multilib);
+}
+
+/* Next two functions copied from file-find.cc, which defines its own
+   find_a_file function.  */
+
+/* Take the value of the environment variable ENV, break it into a path, and
+   add of the entries to PPREFIX.  */
+
+static void
+prefix_from_string (const char *p, struct path_prefix *pprefix)
+{
+  const char *startp, *endp;
+  char *nstore = XNEWVEC (char, strlen (p) + 3);
+
+  startp = endp = p;
+  while (1)
+    {
+      if (*endp == PATH_SEPARATOR || *endp == 0)
+	{
+	  strncpy (nstore, startp, endp-startp);
+	  if (endp == startp)
+	    {
+	      strcpy (nstore, "./");
+	    }
+	  else if (! IS_DIR_SEPARATOR (endp[-1]))
+	    {
+	      nstore[endp-startp] = DIR_SEPARATOR;
+	      nstore[endp-startp+1] = 0;
+	    }
+	  else
+	    nstore[endp-startp] = 0;
+
+	  add_prefix (pprefix, nstore, "path", PREFIX_PRIORITY_LAST, 0, 0);
+	  if (*endp == 0)
+	    break;
+	  endp = startp = endp + 1;
+	}
+      else
+	endp++;
+    }
+  free (nstore);
+}
+
+static void
+prefix_from_env (const char *e, struct path_prefix *pprefix)
+{
+  const char *const p = env.get (e);
+
+  if (p)
+    prefix_from_string (p, pprefix);
 }
 
 
@@ -8308,6 +8400,8 @@ driver::main (int argc, char **argv)
   bool early_exit;
 
   set_progname (argv[0]);
+  /* Extract PATH into our path_prefixes list.  */
+  prefix_from_env ("PATH", &path_prefixes);
   expand_at_files (&argc, &argv);
   decode_argv (argc, const_cast <const char **> (argv));
   global_initializations ();

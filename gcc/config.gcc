@@ -2712,7 +2712,8 @@ mips*-*-linux*)				# Linux MIPS, either endian.
 	extra_options="${extra_options} linux-android.opt"
 	case ${target} in
 		mipsisa32r6*)
-			default_mips_arch=mips32r6
+			with_arch_32="mips32r6"
+			with_arch_64="mips64r6"
 			;;
 		mipsisa32r2*)
 			default_mips_arch=mips32r2
@@ -2734,7 +2735,8 @@ mips*-*-linux*)				# Linux MIPS, either endian.
 			;;
 		mipsisa64r6*-*-linux-gnuabi64)
 			default_mips_abi=64
-			default_mips_arch=mips64r6
+			with_arch_32="mips32r6"
+			with_arch_64="mips64r6"
 			enable_mips_multilibs="yes"
 			;;
 		mipsisa64r6*-*-linux*)
@@ -4526,9 +4528,17 @@ case "${target}" in
 		done
 
 		case "$with_float" in
-		"" \
-		| soft | hard | softfp)
+		"")
 			# OK
+			;;
+		soft)
+			tm_defines="${tm_defines} TARGET_CONFIGURED_FLOAT_ABI=0"
+			;;
+		softfp)
+			tm_defines="${tm_defines} TARGET_CONFIGURED_FLOAT_ABI=1"
+			;;
+		hard)
+			tm_defines="${tm_defines} TARGET_CONFIGURED_FLOAT_ABI=2"
 			;;
 		*)
 			echo "Unknown floating point type used in --with-float=$with_float" 1>&2
@@ -4564,6 +4574,9 @@ case "${target}" in
 		"" \
 		| arm | thumb )
 			#OK
+			if test "$with_mode" = thumb; then
+				tm_defines="${tm_defines} TARGET_CONFIGURED_THUMB_MODE=1"
+			fi
 			;;
 		*)
 			echo "Unknown mode used in --with-mode=$with_mode"
@@ -6090,7 +6103,7 @@ case ${target} in
 		;;
 	i[34567]86-*-linux* | x86_64-*-linux*)
 		extra_objs="${extra_objs} gnu-property.o"
-		tmake_file="$tmake_file i386/t-linux i386/t-gnu-property"
+		tmake_file="i386/t-linux $tmake_file i386/t-gnu-property"
 		;;
 	i[34567]86-*-kfreebsd*-gnu | x86_64-*-kfreebsd*-gnu)
 		tmake_file="$tmake_file i386/t-kfreebsd"

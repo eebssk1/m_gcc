@@ -150,6 +150,9 @@ endif
 # All language-specific object files for jit.
 jit_OBJS = $(JIT_OBJS) $(JIT_TARGET_OBJS)
 
+CFLAGS-jit/jit-playback.o += \
+	-DFALLBACK_GCC_EXEC_PREFIX=\"$(libdir)/gcc/$(target_subdir)/$(version)\"
+
 # Use strict warnings for this front end.
 jit-warn = $(STRICT_WARN)
 

@@ -3802,7 +3802,7 @@ target_configargs="$target_configargs ${tbaseargs}"
 # native.  However, it would be better to use other mechanisms to make the
 # sorts of decisions they want to make on this basis.  Please consider
 # this option to be deprecated.  FIXME.
-if test x${is_cross_compiler} = xyes ; then
+if test x${is_cross_compiler} = xyes || test x${FORCE_CROSS_LAYOUT} = xyes; then
   target_configargs="--with-cross-host=${host_noncanonical} ${target_configargs}"
 fi
 
@@ -3977,7 +3977,7 @@ if test -d ${srcdir}/gcc; then
   fi
 
   # Search for pre-installed headers if nothing else fits.
-  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include'
+  FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -isystem $(build_tooldir)/include -isystem $(build_tooldir)/sys-include -isystem $(CURDIR)/sys-include'
 fi
 
 if test "x${use_gnu_ld}" = x &&
