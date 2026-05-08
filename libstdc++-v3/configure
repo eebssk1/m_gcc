@@ -5083,7 +5083,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -5129,7 +5129,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -5153,7 +5153,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -5198,7 +5198,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -5222,7 +5222,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -14519,23 +14519,23 @@ if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   done
 
   if test "$pre_test_object_deps_done" = no; then
+    #mangled, try fix!
     predep_objects_CXX=""
     postdep_objects_CXX=""
     postdeps_CXX=""
-
-   for p in `eval "$output_verbose_link_cmd"`; do
-     case $p in
-       *crti* | *crtbegin*)
-         predep_objects_CXX="$predep_objects_CXX $p"
-       ;;
-       *crtend* | *crtn*)
-         postdep_objects_CXX="$postdep_objects_CXX $p"
-       ;;
-       -l*)
-         postdeps_CXX="$postdeps_CXX $p"
-       ;;
-     esac
-   done
+    for p in `eval "$output_verbose_link_cmd"`; do
+      case $p in
+        *crti* | *crtbegin*)
+          predep_objects_CXX="$predep_objects_CXX $p"
+        ;;
+        *crtend* | *crtn*)
+          postdep_objects_CXX="$postdep_objects_CXX $p"
+        ;;
+        -l*)
+          postdeps_CXX="${postdeps_CXX} ${p}"
+        ;;
+      esac
+    done
   fi
 
   # Clean up.
@@ -16488,7 +16488,7 @@ $as_echo "$glibcxx_cv_atomic_word" >&6; }
     # Fake what AC_TRY_COMPILE does.
 
     cat > conftest.$ac_ext << EOF
-#line 16471 "configure"
+#line 16491 "configure"
 #include "${glibcxx_srcdir}/config/$atomic_word_dir/atomic_word.h"
 int main()
 {
@@ -16634,7 +16634,7 @@ $as_echo "mutex" >&6; }
   # unnecessary for this test.
 
     cat > conftest.$ac_ext << EOF
-#line 16617 "configure"
+#line 16637 "configure"
 int main()
 {
   _Decimal32 d1;
@@ -16676,7 +16676,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
   # unnecessary for this test.
 
   cat > conftest.$ac_ext << EOF
-#line 16659 "configure"
+#line 16679 "configure"
 template<typename T1, typename T2>
   struct same
   { typedef T2 type; };
@@ -54165,7 +54165,7 @@ $as_echo "$glibcxx_cv_libbacktrace_atomics" >&6; }
     CXXFLAGS='-O0 -S'
 
     cat > conftest.$ac_ext << EOF
-#line 54148 "configure"
+#line 54168 "configure"
 #include <stddef.h>
 int main()
 {

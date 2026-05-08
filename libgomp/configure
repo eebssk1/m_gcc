@@ -12732,6 +12732,26 @@ if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
     esac
   done
 
+  if test "$pre_test_object_deps_done" = no; then
+    #mangled, try fix!
+    predep_objects_FC=""
+    postdep_objects_FC=""
+    postdeps_FC=""
+    for p in `eval "$output_verbose_link_cmd"`; do
+      case $p in
+        *crti* | *crtbegin*)
+          predep_objects_FC="$predep_objects_FC $p"
+        ;;
+        *crtend* | *crtn*)
+          postdep_objects_FC="$postdep_objects_FC $p"
+        ;;
+        -l*)
+          postdeps_FC="${postdeps_FC} ${p}"
+        ;;
+      esac
+    done
+  fi
+
   # Clean up.
   rm -f a.out a.exe
 else
