@@ -63,6 +63,8 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 
 #include "config/i386/i386-opts.h"
 
+#include <stdbool.h>
+
 #define MAX_STRINGOP_ALGS 4
 
 /* Specify what algorithm to use for stringops on known size.
