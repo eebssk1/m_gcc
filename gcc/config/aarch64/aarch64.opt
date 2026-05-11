@@ -277,7 +277,7 @@ EnumValue
 Enum(early_ra_scope) String(none) Value(AARCH64_EARLY_RA_NONE)
 
 mearly-ra=
-Target RejectNegative Joined Enum(early_ra_scope) Var(aarch64_early_ra) Init(AARCH64_EARLY_RA_NONE) Optimization
+Target RejectNegative Joined Enum(early_ra_scope) Var(aarch64_early_ra) Init(AARCH64_EARLY_RA_STRIDED) Optimization
 Specify when to enable an early register allocation pass.  The possibilities
 are: all functions, functions that have access to strided multi-register
 instructions, and no functions.
@@ -407,7 +407,7 @@ EnumValue
 Enum(aarch64_autovec_preference) String(prefer-sve) Value(AARCH64_AUTOVEC_PREFER_SVE)
 
 -param=aarch64-loop-vect-issue-rate-niters=
-Target Joined UInteger Var(aarch64_loop_vect_issue_rate_niters) Init(6) IntegerRange(0, 65536) Param
+Target Joined UInteger Var(aarch64_loop_vect_issue_rate_niters) Init(7) IntegerRange(0, 65536) Param
 
 -param=aarch64-mops-memcpy-size-threshold=
 Target Joined UInteger Var(aarch64_mops_memcpy_size_threshold) Init(256) Param
@@ -422,7 +422,7 @@ Target Joined UInteger Var(aarch64_mops_memset_size_threshold) Init(256) Param
 Constant memset size in bytes from which to start using MOPS sequence.
 
 -param=aarch64-vect-unroll-limit=
-Target Joined UInteger Var(aarch64_vect_unroll_limit) Init(4) Param
+Target Joined UInteger Var(aarch64_vect_unroll_limit) Init(5) Param
 Limit how much the autovectorizer may unroll a loop.
 
 -param=aarch64-ldp-policy=
@@ -449,7 +449,7 @@ EnumValue
 Enum(aarch64_ldp_stp_policy) String(aligned) Value(AARCH64_LDP_STP_POLICY_ALIGNED)
 
 -param=aarch64-ldp-alias-check-limit=
-Target Joined UInteger Var(aarch64_ldp_alias_check_limit) Init(8) IntegerRange(0, 65536) Param
+Target Joined UInteger Var(aarch64_ldp_alias_check_limit) Init(12) IntegerRange(0, 65536) Param
 Limit on number of alias checks performed when attempting to form an ldp/stp.
 
 -param=aarch64-ldp-writeback=
