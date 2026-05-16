@@ -1,3 +1,85 @@
+2026-05-15  H.J. Lu  <hjl.tools@gmail.com>
+
+	Backported from master:
+	2026-05-13  H.J. Lu  <hjl.tools@gmail.com>
+		    Uros Bizjak  <ubizjak@gmail.com>
+
+	PR target/120870
+	* config/i386/i386.cc (ix86_save_reg): Return true for DRAP
+	register early at entry.
+	(find_drap_reg): Use R11_REG in preserve_none functions in
+	64-bit mode.
+
+2026-05-15  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2026-05-15  Xi Ruoyao  <xry111@xry111.site>
+
+	PR tree-optimization/125291
+	* tree-scalar-evolution.cc (simplify_peeled_chrec): Sign-extend
+	the step for peeled converted IV.
+
+2026-05-15  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-05-15  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/125308
+	* config/i386/sse.md (*minmax<mode>3_4): Force also
+	operands[2] into a REG.
+
+2026-05-14  Andi Kleen  <ak@gcc.gnu.org>
+
+	PR target/124316
+	* config/i386/i386.md (ptwrite): Add explicit mode to
+	instruction.
+
+2026-05-14  Georg-Johann Lay  <avr@gjlay.de>
+
+	Backported from master:
+	2026-05-14  Georg-Johann Lay  <avr@gjlay.de>
+
+	PR target/125194
+	* config/avr/avr.cc (avr_no_call_main_p): Remove variable...
+	(avr_file_end): ...and code that uses it.
+	(avr_insert_attributes): Same.  Add "used" to main attributes
+	when -mno-call-main.
+	* config/avr/gen-avr-mmcu-specs.cc (print_mcu): Emit code
+	for link_no_call_main specs.
+	* config/avr/specs.h (LINK_SPEC): Add %(link_no_call_main).
+
+2026-05-13  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2026-05-08  Xi Ruoyao  <xry111@xry111.site>
+
+	PR target/125049
+	* config/loongarch/predicates.md (ssp_operand): New
+	define_predicate.
+	(ssp_normal_operand): New define_predicate.
+	* config/loongarch/constraints.md (ZE): New define_constraint.
+	(ZF): New define_constraint.
+	* config/loongarch/loongarch.md (UNSPEC_SSP): New unspec.
+	(cbranch4): Add "@" to create gen_cbranch4(machine_mode, ...).
+	(@stack_protect_combined_set_normal_<mode>): New define_insn.
+	(@stack_protect_combined_set_extreme_<mode>): New define_insn.
+	(@stack_protect_combined_test_internal_<mode>): New define_insn.
+	(stack_protect_combined_set): New define_expand.
+	(stack_protect_combined_test): New define_expand.
+	* config/loongarch/loongarch-protos.h
+	(loongarch_output_asm_load_canary): Declare.
+	* config/loongarch/loongarch.cc (loongarch_print_operand): Allow
+	'v' to print d/w for DImode/SImode.
+	(loongarch_output_asm_load_canary): Implement.
+
+2026-05-13  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2026-05-08  Xi Ruoyao  <xry111@xry111.site>
+
+	* config/loongarch/loongarch.cc (loongarch_print_operand): Print
+	the symbol name for SYMBOL_REF with %c.
+
 2026-05-12  Artemiy Volkov  <artemiy.volkov@arm.com>
 
 	Backported from master:

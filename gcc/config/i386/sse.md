@@ -3447,7 +3447,7 @@
      u = UNSPEC_IEEE_MAX;
 
    rtx tmp = force_reg (<MODE>mode, operands[3]);
-   rtvec v = gen_rtvec (2, operands[2], tmp);
+   rtvec v = gen_rtvec (2, force_reg (<MODE>mode, operands[2]), tmp);
    operands[5] = gen_rtx_UNSPEC (<MODE>mode, v, u);
  })
 
