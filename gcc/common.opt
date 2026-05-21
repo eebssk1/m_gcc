@@ -2942,7 +2942,7 @@ Common RejectNegative Joined UInteger Optimization
 ; premature removal from the queue of stalled insns into the ready list (has
 ; an effect only if the flag 'sched_stalled_insns' is set).
 fsched-stalled-insns-dep
-Common Var(flag_sched_stalled_insns_dep,1) Init(1) Optimization UInteger
+Common Var(flag_sched_stalled_insns_dep) Init(1) Optimization UInteger
 Set dependence distance checking in premature scheduling of queued insns.
 
 fsched-stalled-insns-dep=
