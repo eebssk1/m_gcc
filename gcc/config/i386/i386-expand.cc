@@ -10454,7 +10454,7 @@ ix86_expand_movmem (rtx operands[])
 {
   /* Since there are much less registers available in 32-bit mode, don't
      inline movmem in 32-bit mode.  */
-  if (!TARGET_64BIT)
+  if (!TARGET_64BIT || optimize_insn_for_size_p ())
     return false;
 
   rtx dst = operands[0];
@@ -15243,7 +15243,7 @@ ix86_expand_builtin (tree exp, rtx target, rtx subtarget,
 	else
 	  {
 	    if (INTVAL (op3) != 0)
-	      warning (0, "invalid forth argument to"
+	      warning (0, "invalid fourth argument to"
 			  " %<__builtin_ia32_prefetch%>; using zero");
 
 	    if (!address_operand (op0, VOIDmode))
