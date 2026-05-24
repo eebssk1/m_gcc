@@ -1,3 +1,42 @@
+2026-05-23  Paul Thomas  <pault@gcc.gnu.org>
+
+	Backported from master:
+	2026-05-23  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/125391
+	* trans.cc (gfc_assignment_finalizer_call): For finalization of
+	allocatable and pointer lhs before assignment, gfc_conv_expr
+	should be used with se.descriptor_only. This avoids implicit of
+	set_factored_descriptor_value by gfc_conv_expr_descriptor.
+
+2026-05-22  Tobias Burnus  <tburnus@baylibre.com>
+
+	Backported from master:
+	2026-05-22  Tobias Burnus  <tburnus@baylibre.com>
+
+	* dump-parse-tree.cc: Fix comment typo.
+	* gfortran.texi: Fix typo.
+	* intrinsic.texi: Likewise.
+	* invoke.texi: Likewise.
+
+2026-05-22  Tobias Burnus  <tburnus@baylibre.com>
+
+	Backported from master:
+	2026-05-22  Tobias Burnus  <tburnus@baylibre.com>
+
+	PR fortran/125416
+	* invoke.texi (fcoarray): Document 'shared'.
+
+2026-05-21  Thomas Koenig  <tkoenig@gcc.gnu.org>
+
+	Backported from master:
+	2026-05-20  Thomas Koenig  <tkoenig@gcc.gnu.org>
+
+	PR fortran/106546
+	* frontend-passes.cc (create_var): Set attr->automatic on
+	new symbol.
+	(create_do_loop): Likewise on iteration variable.
+
 2026-05-20  Thomas Koenig  <tkoenig@gcc.gnu.org>
 
 	Backported from master:
