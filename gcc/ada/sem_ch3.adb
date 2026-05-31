@@ -3197,12 +3197,22 @@ package body Sem_Ch3 is
    begin
       if Present (Aspect_Specifications (Parent (Def))) then
          declare
-            Asp : Node_Id;
+            Asp  : Node_Id;
+            Expr : Node_Id;
+
          begin
             Asp := First (Aspect_Specifications (Parent (Def)));
             while Present (Asp) loop
                if Chars (Identifier (Asp)) = Name_Unsigned_Base_Range then
-                  Is_Unsigned_Base_Range_Type_Decl := True;
+                  Expr := Expression (Asp);
+
+                  if Present (Expr) then
+                     Analyze_And_Resolve (Expr, Standard_Boolean);
+                  end if;
+
+                  Is_Unsigned_Base_Range_Type_Decl :=
+                    No (Expression (Asp))
+                      or else Is_True (Static_Boolean (Expr));
                   exit;
                end if;
 
@@ -4865,6 +4875,19 @@ package body Sem_Ch3 is
               ("formal parameter cannot be implicitly converted to "
                & "class-wide type when Extensions_Visible is False", E);
          end if;
+
+         --  Cannot invoke a C++ constructor in the return statement of
+         --  a function with foreign convention, because the extra formal
+         --  BIP_Object_Access is not available.
+
+         if Is_CPP_Constructor_Call (E)
+           and then Is_Return_Object (Id)
+           and then Has_Foreign_Convention (Return_Applies_To (Scope (Id)))
+         then
+            Error_Msg_N
+              ("C++ constructor call in return statement of "
+               &  "function with foreign convention", E);
+         end if;
       end if;
 
       --  If the No_Streams restriction is set, check that the type of the
@@ -6021,6 +6044,7 @@ package body Sem_Ch3 is
                   Set_No_Tagged_Streams_Pragma
                                         (Id, No_Tagged_Streams_Pragma (T));
                   Set_Is_Abstract_Type  (Id, Is_Abstract_Type (T));
+                  Set_Is_CPP_Class      (Id, Is_CPP_Class (T));
                   Set_Class_Wide_Type   (Id, Class_Wide_Type (T));
 
                   if Is_Interface (T) then
@@ -10114,6 +10138,13 @@ package body Sem_Ch3 is
         (Derived_Type, Has_Non_Standard_Rep     (Parent_Base));
       Set_Has_Primitive_Operations
         (Derived_Type, Has_Primitive_Operations (Parent_Base));
+
+      if Ekind (Derived_Type) = E_Record_Type then
+         Set_Is_Unchecked_Union
+           (Derived_Type, Is_Unchecked_Union (Parent_Base));
+         Set_Has_Unchecked_Union
+           (Derived_Type, Has_Unchecked_Union (Parent_Base));
+      end if;
 
       --  Set fields for private derived types
 
@@ -19185,7 +19216,7 @@ package body Sem_Ch3 is
          --  of discriminated private type without a full view.
 
          else
-            Insert_Actions (Obj_Def, Freeze_Entity (Base_Type (T), P));
+            Freeze_Before (Obj_Def, Base_Type (T));
          end if;
 
       --  Ada 2005 AI-406: the object definition in an object declaration
@@ -19964,6 +19995,11 @@ package body Sem_Ch3 is
          if not Is_Tagged then
             Append_Elmt (Old_C, Assoc_List);
             Append_Elmt (New_C, Assoc_List);
+
+            if Plain_Discrim then
+               Append_Elmt (Discriminal (Old_C), Assoc_List);
+               Append_Elmt (Discriminal (New_C), Assoc_List);
+            end if;
          end if;
       end Inherit_Component;
 

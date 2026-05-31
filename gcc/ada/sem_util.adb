@@ -2796,7 +2796,7 @@ package body Sem_Util is
                if Is_Writable_Actual then
 
                   --  Skip checking the error in non-elementary types since
-                  --  RM 6.4.1(6.15/3) is restricted to elementary types, but
+                  --  RM 6.4.1(6.16/3) is restricted to elementary types, but
                   --  store this actual in Writable_Actuals_List since it is
                   --  needed to perform checks on other constructs that have
                   --  arbitrary order of evaluation (for example, aggregates).
@@ -2954,7 +2954,7 @@ package body Sem_Util is
       --  call C2 (not including the construct C itself), there is no other
       --  name anywhere within a direct constituent of the construct C other
       --  than the one containing C2, that is known to refer to the same
-      --  object (RM 6.4.1(6.17/3)).
+      --  object (RM 6.4.1(6.18/3)).
 
       case Nkind (N) is
          when N_Range =>
@@ -3201,7 +3201,7 @@ package body Sem_Util is
 
                --  For an array aggregate, a discrete_choice_list that has
                --  a nonstatic range is considered as two or more separate
-               --  occurrences of the expression (RM 6.4.1(6.20/3)).
+               --  occurrences of the expression (RM 6.4.1(6.21/3)).
 
                elsif Is_Array_Type (Etype (N))
                  and then Nkind (N) = N_Aggregate
@@ -7047,7 +7047,7 @@ package body Sem_Util is
       --  For renamings, return False if the prefix of any dereference within
       --  the renamed object_name is a variable, or any expression within the
       --  renamed object_name contains references to variables or calls on
-      --  nonstatic functions; otherwise return True (RM 6.4.1(6.10/3))
+      --  nonstatic functions; otherwise return True (RM 6.4.1(6.11/3))
 
       ------------------------
       -- Is_Object_Renaming --
@@ -12493,15 +12493,16 @@ package body Sem_Util is
 
    function Has_Inferable_Discriminants (N : Node_Id) return Boolean is
 
-      function Prefix_Is_Formal_Parameter (N : Node_Id) return Boolean;
-      --  Determines whether the left-most prefix of a selected component is a
-      --  formal parameter in a subprogram. Assumes N is a selected component.
+      function Prefix_Is_Formal_Parameter_Of_EQ (N : Node_Id) return Boolean;
+      --  Determines whether the left-most prefix of selected component N
+      --  is a formal parameter of the predefined equality function of an
+      --  Unchecked_Union type.
 
-      --------------------------------
-      -- Prefix_Is_Formal_Parameter --
-      --------------------------------
+      --------------------------------------
+      -- Prefix_Is_Formal_Parameter_Of_EQ --
+      --------------------------------------
 
-      function Prefix_Is_Formal_Parameter (N : Node_Id) return Boolean is
+      function Prefix_Is_Formal_Parameter_Of_EQ (N : Node_Id) return Boolean is
          Sel_Comp : Node_Id;
 
       begin
@@ -12514,8 +12515,10 @@ package body Sem_Util is
             Sel_Comp := Parent (Sel_Comp);
          end loop;
 
-         return Is_Formal (Entity (Prefix (Sel_Comp)));
-      end Prefix_Is_Formal_Parameter;
+         return Is_Formal (Entity (Prefix (Sel_Comp)))
+           and then
+             Is_Unchecked_Union_Equality (Scope (Entity (Prefix (Sel_Comp))));
+      end Prefix_Is_Formal_Parameter_Of_EQ;
 
    --  Start of processing for Has_Inferable_Discriminants
 
@@ -12533,14 +12536,14 @@ package body Sem_Util is
             return False;
          end if;
 
-         --  A small hack. If we have a per-object constrained selected
-         --  component of a formal parameter, return True since we do not
-         --  know the actual parameter association yet.
+         --  We need to return True for the component of a formal parameter
+         --  of the predefined equality function of an Unchecked_Union type
+         --  when expanding it (see Expand_Unchecked_Union_Equality).
 
          return not Has_Per_Object_Constraint (Entity (Selector_Name (N)))
            or else not Is_Unchecked_Union (Etype (Prefix (N)))
            or else Has_Inferable_Discriminants (Prefix (N))
-           or else Prefix_Is_Formal_Parameter (N);
+           or else Prefix_Is_Formal_Parameter_Of_EQ (N);
 
       --  A qualified expression has inferable discriminants if its subtype
       --  mark is a constrained Unchecked_Union subtype.
@@ -29339,13 +29342,21 @@ package body Sem_Util is
                return False;
             end if;
 
+            --  Reject for example subprogram calls in object notation
+
+            if Ekind (Entity (Selector_Name (N))) not in E_Component
+                                                       | E_Discriminant
+            then
+               return False;
+            end if;
+
             declare
                Comp : constant Entity_Id :=
                  Original_Record_Component (Entity (Selector_Name (N)));
             begin
-              --  AI12-0373 confirms that we should not call
-              --  Has_Discriminant_Dependent_Constraint here which would be
-              --  too strong.
+               --  AI12-0373 confirms that we should not call
+               --  Has_Discriminant_Dependent_Constraint here,
+               --  which would be too strong.
 
                if Is_Declared_Within_Variant (Comp) then
                   return False;

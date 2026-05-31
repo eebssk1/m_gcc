@@ -96,6 +96,14 @@ package body Sem_Disp is
    --  Check whether a primitive operation is inherited from an operation
    --  declared in the visible part of its package.
 
+   procedure Override_Dispatching_Operation
+     (Tagged_Type : Entity_Id;
+      Prev_Op     : Entity_Id;
+      New_Op      : Entity_Id);
+   --  Replace an implicit dispatching operation of the type Tagged_Type
+   --  with an explicit one. Prev_Op is an inherited primitive operation which
+   --  is overridden by the explicit declaration of New_Op.
+
    -------------------------------
    -- Add_Dispatching_Operation --
    -------------------------------
@@ -309,7 +317,29 @@ package body Sem_Disp is
          --  Common Ada case
 
          if not Has_First_Controlling_Parameter_Aspect (Typ) then
-            Ctrl_Type := Check_Controlling_Type (Etype (Formal), Subp);
+
+            --  Formals of a type specifying aspect First_Controlling_Parameter
+            --  are not candidate controlling parameters when they are not
+            --  the first formal of the dispatching primitive. For example:
+            --
+            --     type T1 is tagged ...
+            --     type T2 is tagged ... with First_Controlling_Parameter;
+            --     procedure Prim (X : T1; Y : T2);
+            --
+            --  When T2 does not have the First_Controlling_Parameter aspect
+            --  this example is rejected because a primitive can be dispatching
+            --  in only one type. However, T2 cannot be a candidate controlling
+            --  type for Prim because Y is not its first formal. Therefore,
+            --  this example is accepted.
+
+            if Is_Tagged_Type (Etype (Formal))
+              and then Has_First_Controlling_Parameter_Aspect (Etype (Formal))
+              and then Formal /= First_Formal (Subp)
+            then
+               null;
+            else
+               Ctrl_Type := Check_Controlling_Type (Etype (Formal), Subp);
+            end if;
 
          --  Type with the First_Controlling_Parameter aspect: for overriding
          --  primitives of a parent type that lacks this aspect, we cannot be
@@ -2413,6 +2443,14 @@ package body Sem_Disp is
             pragma Assert (False);
             return Empty;
          end if;
+
+      --  Deal with controlling function wrappers
+
+      elsif Ekind (Subp) = E_Function
+        and then Has_Controlling_Result (Subp)
+        and then Is_Wrapper (Subp)
+      then
+         return Check_Controlling_Type (Etype (Subp), Subp);
 
       --  General case
 

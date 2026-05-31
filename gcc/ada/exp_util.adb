@@ -8955,6 +8955,43 @@ package body Exp_Util is
         and then Expansion_Delayed (Unqual_N);
    end Is_Delayed_Conditional_Expression;
 
+   --------------------------------
+   -- Is_Distributable_Declaration --
+   --------------------------------
+
+   function Is_Distributable_Declaration (N : Node_Id) return Boolean is
+      Obj_Def : Node_Id;
+
+   begin
+      --  First limitation: distribution is not implemented for return objects
+
+      if Nkind (N) /= N_Object_Declaration
+        or else Is_Return_Object (Defining_Identifier (N))
+      then
+         return False;
+      end if;
+
+      Obj_Def := Object_Definition (N);
+
+      --  Second limitation: distribution is not implemented for CW types
+
+      if Is_Entity_Name (Obj_Def)
+        and then Is_Class_Wide_Type (Entity (Obj_Def))
+      then
+         return False;
+      end if;
+
+      --  The declaration of a variable of an unconstrained definite nonlimited
+      --  subtype cannot be distributed because the variable is mutable and the
+      --  expansion of 'Constrained must statically return False for it.
+
+      return Constant_Present (N)
+        or else not Is_Entity_Name (Obj_Def)
+        or else Is_Constrained (Entity (Obj_Def))
+        or else not Is_Definite_Subtype (Entity (Obj_Def))
+        or else Is_Inherently_Limited_Type (Entity (Obj_Def));
+   end Is_Distributable_Declaration;
+
    --------------------------------------------------
    -- Is_Expanded_Class_Wide_Interface_Object_Decl --
    --------------------------------------------------
@@ -12415,7 +12452,15 @@ package body Exp_Util is
               and then Is_Entity_Name (Name (Init_Call))
               and then Entity (Name (Init_Call)) = Init_Proc
             then
-               return Init_Call;
+               declare
+                  Act : constant Node_Id :=
+                    Unqual_Conv (First (Parameter_Associations (Init_Call)));
+
+               begin
+                  if Is_Entity_Name (Act) and then Entity (Act) = Var then
+                     return Init_Call;
+                  end if;
+               end;
             end if;
 
             Next (Init_Call);
@@ -12745,7 +12790,16 @@ package body Exp_Util is
                    or else Nkind (Prefix (Exp)) /= N_Aggregate)
         and then not Is_Name_Reference (Prefix (Exp))
       then
-         Remove_Side_Effects (Prefix (Exp), Name_Req, Variable_Ref);
+         Remove_Side_Effects
+           (Exp                => Prefix (Exp),
+            Name_Req           => Name_Req,
+            Renaming_Req       => Renaming_Req,
+            Variable_Ref       => False,
+            Related_Id         => Related_Id,
+            Is_Low_Bound       => False,
+            Is_High_Bound      => False,
+            Discr_Number       => 0,
+            Check_Side_Effects => Check_Side_Effects);
          goto Leave;
 
       --  If this is an elementary or a small not-by-reference record type, and
@@ -12847,7 +12901,16 @@ package body Exp_Util is
       elsif Nkind (Exp) = N_Unchecked_Type_Conversion
         and then Nkind (Expression (Exp)) = N_Explicit_Dereference
       then
-         Remove_Side_Effects (Expression (Exp), Name_Req, Variable_Ref);
+         Remove_Side_Effects
+           (Exp                => Expression (Exp),
+            Name_Req           => Name_Req,
+            Renaming_Req       => Renaming_Req,
+            Variable_Ref       => Variable_Ref,
+            Related_Id         => Related_Id,
+            Is_Low_Bound       => Is_Low_Bound,
+            Is_High_Bound      => Is_High_Bound,
+            Discr_Number       => Discr_Number,
+            Check_Side_Effects => Check_Side_Effects);
          goto Leave;
 
       --  If this is a type conversion, leave the type conversion and remove
@@ -12860,7 +12923,16 @@ package body Exp_Util is
       elsif Nkind (Exp) = N_Type_Conversion
         and then Etype (Expression (Exp)) /= Universal_Integer
       then
-         Remove_Side_Effects (Expression (Exp), Name_Req, Variable_Ref);
+         Remove_Side_Effects
+           (Exp                => Expression (Exp),
+            Name_Req           => Name_Req,
+            Renaming_Req       => Renaming_Req,
+            Variable_Ref       => Variable_Ref,
+            Related_Id         => Related_Id,
+            Is_Low_Bound       => Is_Low_Bound,
+            Is_High_Bound      => Is_High_Bound,
+            Discr_Number       => Discr_Number,
+            Check_Side_Effects => Check_Side_Effects);
          goto Leave;
 
       --  If this is an unchecked conversion that Gigi can't handle, make
@@ -12941,7 +13013,16 @@ package body Exp_Util is
         and then Nkind (Prefix (Exp)) = N_Function_Call
         and then Is_Array_Type (Und_Typ)
       then
-         Remove_Side_Effects (Prefix (Exp), Name_Req, Variable_Ref);
+         Remove_Side_Effects
+           (Exp                => Prefix (Exp),
+            Name_Req           => Name_Req,
+            Renaming_Req       => Renaming_Req,
+            Variable_Ref       => Variable_Ref,
+            Related_Id         => Related_Id,
+            Is_Low_Bound       => Is_Low_Bound,
+            Is_High_Bound      => Is_High_Bound,
+            Discr_Number       => Discr_Number,
+            Check_Side_Effects => Check_Side_Effects);
          goto Leave;
 
       --  Otherwise we generate a reference to the expression
@@ -13808,7 +13889,7 @@ package body Exp_Util is
       --  We do not analyze this renaming declaration, because all its
       --  components have already been analyzed, and if we were to go
       --  ahead and analyze it, we would in effect be trying to generate
-      --  another declaration of X, which won't do.
+      --  another declaration of Def_Id, which won't do.
 
       Set_Renamed_Object (Def_Id, Nam);
       Set_Analyzed (N);
