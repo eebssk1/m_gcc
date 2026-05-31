@@ -631,7 +631,7 @@ Common Joined UInteger Var(param_inline_functions_called_once_insns) Init(4255) 
 Maximum combined size of caller and callee which is inlined if callee is called once.
 
 -param=max-inline-insns-auto=
-Common Joined UInteger Var(param_max_inline_insns_auto) Init(36) Optimization Param
+Common Joined UInteger Var(param_max_inline_insns_auto) Init(34) Optimization Param
 The maximum number of instructions when automatically inlining.
 
 -param=max-inline-insns-recursive=
