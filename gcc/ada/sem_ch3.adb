@@ -19278,6 +19278,11 @@ package body Sem_Ch3 is
 
       else
          Find_Type (S);
+         if not Is_Entity_Name (S) then
+            pragma Assert (Serious_Errors_Detected > 0);
+            --  Avoid passing bad argument to Entity
+            return Any_Type;
+         end if;
          Typ := Entity (S);
       end if;
 
