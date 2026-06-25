@@ -5514,7 +5514,8 @@ eval_can_substitute (location_t loc, const constexpr_ctx *ctx,
 	return throw_exception (loc, ctx,
 				"invalid argument to can_substitute",
 				fun, non_constant_p, jump_target);
-      a = convert_from_reference (a);
+      if (!TYPE_P (a))
+	a = convert_from_reference (a);
       TREE_VEC_ELT (rvec, i) = a;
     }
   if (DECL_TYPE_TEMPLATE_P (r) || DECL_TEMPLATE_TEMPLATE_PARM_P (r))
@@ -7061,6 +7062,13 @@ class_members_of (location_t loc, const constexpr_ctx *ctx, tree r,
 	  }
       for (tree m : implicitly_declared)
 	if (DECL_OVERLOADED_OPERATOR_IS (m, EQ_EXPR))
+	  {
+	    CONSTRUCTOR_APPEND_ELT (elts, NULL_TREE,
+				    get_reflection_raw (loc, m));
+	    break;
+	  }
+      for (tree m : implicitly_declared)
+	if (LAMBDA_FUNCTION_P (m))
 	  {
 	    CONSTRUCTOR_APPEND_ELT (elts, NULL_TREE,
 				    get_reflection_raw (loc, m));

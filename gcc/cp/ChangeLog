@@ -1,3 +1,70 @@
+2026-06-24  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/125939
+	* method.cc (build_stub_type): Pass tf_ignore_bad_quals to
+	cp_build_qualified_type.
+
+2026-06-23  Jason Merrill  <jason@redhat.com>
+
+	Backported from master:
+	2026-06-23  Jason Merrill  <jason@redhat.com>
+
+	PR c++/125745
+	* cp-ubsan.cc (cp_ubsan_instrument_vptr): Use build_vfield_ref.
+
+2026-06-23  Jason Merrill  <jason@redhat.com>
+
+	Backported from master:
+	2026-06-21  Jason Merrill  <jason@redhat.com>
+
+	PR c++/125408
+	* expr.cc (mark_use): Fix condition for changing rvalue to lvalue.
+
+2026-06-23  Jason Merrill  <jason@redhat.com>
+
+	Backported from master:
+	2026-06-21  Jason Merrill  <jason@redhat.com>
+
+	PR c++/125408
+	* tree.cc (cp_walk_subtrees): Walk into the DECL_ORIGINAL_TYPE of a
+	typedef DECL_EXPR.
+
+2026-06-22  Patrick Palka  <ppalka@redhat.com>
+
+	Backported from master:
+	2026-04-27  Patrick Palka  <ppalka@redhat.com>
+
+	PR c++/124978
+	PR c++/115314
+	* semantics.cc (finish_decltype_type): Check REFERENCE_REF_P
+	instead of INDIRECT_REF_P before stripping implicit dereferences.
+
+2026-06-22  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-06-22  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/125889
+	* reflect.cc (class_members_of): Also append LAMBDA_FUNCTION_P
+	from the implicitly_declared vector.
+
+2026-06-17  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-06-17  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/125764
+	* reflect.cc (eval_can_substitute): Don't call
+	convert_from_reference on types.
+
+2026-06-17  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-06-17  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/125759
+	* reflect.cc (get_reflection): Do STRIP_REFERENCE_REF.
+
 2026-06-16  Andrew Pinski  <andrew.pinski@oss.qualcomm.com>
 
 	Backported from master:
