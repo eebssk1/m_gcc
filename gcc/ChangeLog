@@ -1,3 +1,91 @@
+2026-06-29  Alex Coplan  <alex.coplan@arm.com>
+
+	Backported from master:
+	2026-06-23  Alex Coplan  <alex.coplan@arm.com>
+
+	PR target/125818
+	* config/aarch64/aarch64-sve-builtins-base.cc (svset_impl::fold): Fix
+	unsharing to ensure the returned stmt has the exact same lhs as the
+	original.
+
+2026-06-29  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-06-29  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/125469
+	* config/i386/i386.md (*add<mode>_1<nf_name>): Revert 2026-05-28
+	changes.
+	(define_split from *add<mode>_1_nf to *lea<mode>): Set INSN_CODE
+	to -1 if <LEAMODE> and <MODE> are the same.
+
+2026-06-29  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-05-28  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/125469
+	* config/i386/i386.md (*add<mode>_1<nf_name>): Don't return "#" for
+	the lea non-TARGET_APX_NDD case, instead emit a lea directly.
+
+2026-06-29  vekumar  <Venkataramanan.Kumar@amd.com>
+
+	Backported from master:
+	2026-06-26  vekumar  <Venkataramanan.Kumar@amd.com>
+
+	PR target/125949
+	* config/i386/i386.md ("isa"): Add avxvnniint8.
+	("enabled"): Adjust for avxvnniint8.
+	* config/i386/sse.md (vpdp<vpdotprodtype>_<mode>): Adjust for
+	AVXVNNIINT8.
+
+2026-06-27  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-06-27  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/125992
+	* config/s390/s390.md (*brx_stage1_<GPR:mode>): Add CC_REGNUM clobber.
+
+2026-06-25  Peter Bergner  <bergner@tenstorrent.com>
+
+	* config/riscv/riscv-cores.def (RISCV_TUNE): Add tt-ascalon-x.
+	(RISCV_CORE): Likewise.
+	* doc/riscv-mcpu.texi: Regenerate.
+	* doc/riscv-mtune.texi: Likewise.
+
+2026-06-25  Richard Biener  <rguenther@suse.de>
+
+	Backported from master:
+	2026-06-25  Richard Biener  <rguenther@suse.de>
+
+	PR middle-end/125977
+	* cfgexpand.cc (pass_expand::execute): Guard ranger use
+	on optimize.
+
+2026-06-25  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2026-06-25  Xi Ruoyao  <xry111@xry111.site>
+
+	PR target/125628
+	* config/mips/sync.md (sync_old_<optab><mode>): Fix
+	uninitialized operand use.
+	(sync_new_<optab><mode>): Fix uninitialized operand use, use the
+	same expression for the set source of operand 0 and 1.
+
+2026-06-25  Jan Beulich  <jbeulich@suse.com>
+
+	* config/riscv/arch-canonicalize: Avoid f"..." strings.
+
+2026-06-25  Oleg Tolmatcev  <oleg.tolmatcev@gmail.com>
+
+	Backported from master:
+	2026-06-24  Oleg Tolmatcev  <oleg.tolmatcev@gmail.com>
+
+	* config/i386/prfchwintrin.h (_m_prefetchw): Take
+	volatile const void * instead of void *.
+
 2026-06-24  Jan Beulich  <jbeulich@suse.com>
 
 	* doc/ifn.texi: Drop blanks after @code.
