@@ -5781,9 +5781,22 @@ build_unary_op (location_t location, enum tree_code code, tree xarg,
   tree ret = error_mark_node;
   tree eptype = NULL_TREE;
   const char *invalid_op_diag;
-  bool int_operands;
 
-  int_operands = EXPR_INT_CONST_OPERANDS (xarg);
+  /* If ARG is wrapped in a call to .ACCESS_WITH_SIZE — created when the
+     C parser rvalue-converts a counted_by-annotated member access (see
+     PR123569) — unwrap it here.  Unary operators that consume an rvalue
+     (!, -, +) read the value itself rather than dereferencing into the
+     pointed-to data, so the bounds-checking wrapper is unnecessary and
+     would otherwise reach build_unary_op while it is not equipped to
+     handle the wrapped form.  PR123569 fixed the ++/-- side of this by
+     suppressing wrapper creation in the parser; the rvalue-consuming
+     ops still receive the wrapper and need to strip it here.  */
+  if (is_access_with_size_p (arg))
+    xarg = arg = get_ref_from_access_with_size (arg);
+
+  gcc_checking_assert (!is_access_with_size_p (arg));
+
+  bool int_operands = EXPR_INT_CONST_OPERANDS (xarg);
   if (int_operands)
     arg = remove_c_maybe_const_expr (arg);
 
@@ -6245,10 +6258,7 @@ build_unary_op (location_t location, enum tree_code code, tree xarg,
 	  goto return_build_unary_op;
 	}
 
-      /* Ordinary case; arg is a COMPONENT_REF or a decl, or a call to
-	 .ACCESS_WITH_SIZE.  */
-      if (is_access_with_size_p (arg))
-	arg = TREE_OPERAND (TREE_OPERAND (CALL_EXPR_ARG (arg, 0), 0), 0);
+      /* Ordinary case; arg is a COMPONENT_REF or a decl.  */
 
       argtype = TREE_TYPE (arg);
 

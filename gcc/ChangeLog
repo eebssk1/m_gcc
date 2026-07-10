@@ -1,3 +1,231 @@
+2026-07-09  Richard Earnshaw  <rearnsha@arm.com>
+
+	Backported from master:
+	2026-07-07  Richard Earnshaw  <rearnsha@arm.com>
+
+	* config/aarch64/aarch64-option-extensions.def (AARCH64_OPT_EXTENSION):
+	Remove +mpamv2.
+	* config/aarch64/aarch64-sys-regs.def: Remove sysregs associated
+	with MPAMv2_VID and adjust other related sysregs to use the
+	base permitted architecture.
+	* doc/invoke.texi (aarch64: +mpamv2): Remove option.
+
+2026-07-09  Uros Bizjak  <ubizjak@gmail.com>
+
+	Backported from master:
+	2026-07-08  Uros Bizjak  <ubizjak@gmail.com>
+
+	PR target/126148
+	* config/i386/i386-expand.cc (ix86_gen_ccmp_first): Restrict
+	floating-point modes accepted for ccmp according to the
+	available floating-point instruction set.
+
+2026-07-08  Tamar Christina  <tamar.christina@arm.com>
+
+	Backported from master:
+	2026-06-12  Tamar Christina  <tamar.christina@arm.com>
+
+	PR tree-optimization/125597
+	* tree-vect-loop-manip.cc (vect_do_peeling): Create IFN_VARYING for
+	early break scalar IV.
+	* tree-vect-loop.cc (vect_update_ivs_after_vectorizer_for_early_breaks):
+	Replace the IFN_VARYING with actual value.
+
+2026-07-08  Tamar Christina  <tamar.christina@arm.com>
+
+	Backported from master:
+	2026-06-12  Tamar Christina  <tamar.christina@arm.com>
+
+	PR tree-optimization/125597
+	(vect_do_peeling): Create IFN_VARYING for masks.
+	* tree-vect-loop-manip.cc (vect_set_loop_condition): Replace the
+	IFN_VARYING.
+
+2026-07-08  Tamar Christina  <tamar.christina@arm.com>
+
+	Backported from master:
+	2026-06-12  Tamar Christina  <tamar.christina@arm.com>
+
+	PR tree-optimization/125597
+	* internal-fn.def (VARYING): New.
+	* doc/ifn.texi: Document it.
+	* internal-fn.cc (expand_VARYING): New.
+	* internal-fn.h (expand_VARYING): New.
+	* tree-cfg.cc (verify_gimple_call): Check for leaked IFN_VARYING.
+
+2026-07-07  Stafford Horne  <shorne@gmail.com>
+
+	Backported from master:
+	2026-07-07  Stafford Horne  <shorne@gmail.com>
+
+	PR target/126081
+	* config/or1k/or1k.cc (or1k_hard_regno_mode_ok): Stop allowing
+	SImode for FLAG_REGS.
+	(or1k_can_change_mode_class): Stop allowing SImode for
+	FLAG_REGS.
+	(or1k_noce_conversion_profitable_p): Always check
+	or1k_is_cmov_insn.
+
+2026-07-07  Stafford Horne  <shorne@gmail.com>
+
+	Backported from master:
+	2026-06-14  Stafford Horne  <shorne@gmail.com>
+
+	* config/or1k/or1k.md (cbranchsi4): Add clobber clause.
+
+2026-07-07  Stafford Horne  <shorne@gmail.com>
+
+	Backported from master:
+	2026-06-14  Stafford Horne  <shorne@gmail.com>
+
+	* config/or1k/or1k.h (SHIFT_COUNT_TRUNCATED): Define.
+	* config/or1k/or1k.md (rotrsi3): Rename reg_or_u6_operand to
+	reg_or_u5_operand.
+	(<shift_op>si3): Ditto.
+	* config/or1k/predicates.md (reg_or_u6_operand): Remove.
+	(reg_or_u5_operand): New predicate.
+
+2026-07-07  Jeevitha  <jeevitha@linux.ibm.com>
+
+	Backported from master:
+	2026-06-24  Jeevitha Palanisamy  <jeevitha@linux.ibm.com>
+
+	* config/rs6000/altivec.md (V16QI_V2DI): New mode iterator.
+	(add<mode>3): Split into two patterns to support future ISA
+	alternatives.
+	(sub<mode>3): Likewise.
+	* config/rs6000/vsx.md (VIArith): New mode iterator.
+	(vsx_mul<mode>3): New insn pattern.
+	(smul<mode>3_highpart): Split into mode-specific patterns.
+	(umul<mode>3_highpart): Likewise.
+	(smulv8hi3_highpart): New insn pattern.
+	(smulv4si3_highpart): Likewise.
+	(smulv2di3_highpart): Likewise.
+	(umulv8hi3_highpart): Likewise.
+	(umulv4si3_highpart): Likewise.
+	(umulv2di3_highpart): Likewise.
+	* config/rs6000/rs6000-builtins.def (__builtin_vsx_xvmulhuh): New
+	builtin.
+	(__builtin_vsx_xvmulhsh): Likewise.
+	* config/rs6000/rs6000-overload.def (__builtin_vec_mulh): Add
+	overloads for vector multiply-high signed/unsigned halfword.
+	* config/rs6000/rs6000-gen-builtins.cc (enum bif_stanza): Add entry for
+	BSTZ_FUTURE_VSX.
+	(stanza_map): Add future-vsx stanza mapping.
+	(enable_string): Add ENB_FUTURE_VSX.
+	(write_decls): Add ENB_FUTURE_VSX to the bif_enable enum in the
+	generated header file.
+	* config/rs6000/rs6000.md (define_attr "isa"): Add future to the list
+	of ISA values.
+	(define_attr "enabled"): Add check for future ISA.
+	* config/rs6000/rs6000-builtin.cc (rs6000_invalid_builtin): Handle
+	ENB_FUTURE_VSX and issue a diagnostic requiring -mcpu=future and -mvsx.
+	(rs6000_builtin_is_supported): Return TARGET_FUTURE && TARGET_VSX
+	for ENB_FUTURE_VSX built-ins.
+	* doc/extend.texi (PowerPC AltiVec/VSX Built-in Functions Available
+	on Future ISA): Document new functions.
+
+2026-07-07  Icenowy Zheng  <zhengxingda@iscas.ac.cn>
+
+	Backported from master:
+	2026-07-01  Icenowy Zheng  <zhengxingda@iscas.ac.cn>
+
+	PR target/126049
+	* config/riscv/autovec.md: Change fmin/fmax reduction initial
+	value from inf/-inf to NaN for proper semantics of corresponding
+	C funtion.
+
+2026-07-06  vekumar  <Venkataramanan.Kumar@amd.com>
+
+	Backported from master:
+	2026-06-04  vekumar  <Venkataramanan.Kumar@amd.com>
+
+	* config/i386/x86-tune.def (X86_TUNE_FUSE_ALU_AND_BRANCH_MEM): Enable
+	for m_ZNVER6.
+	(X86_TUNE_FUSE_ALU_AND_BRANCH_MEM_IMM): Likewise.
+	(X86_TUNE_SSE_REDUCTION_PREFER_PSHUF): Likewise.
+
+2026-07-06  liuhongt  <hongtao.liu@intel.com>
+
+	Backported from master:
+	2026-07-06  liuhongt  <hongtao.liu@intel.com>
+
+	PR target/126098
+	* config/i386/sse.md (VI1_AVX512VNNIBW): Remove.
+	(sdot_prod<ssedvecmodelower><mode>): Use VI1_AVX512 instead of
+	VI1_AVX512VNNIBW so V64QI is enabled only under AVX512BW.
+	(udot_prod<ssedvecmodelower><mode>): Likewise.
+
+2026-07-05  Oleg Endo  <olegendo@gcc.gnu.org>
+
+	PR target/67459
+	PR target/122948
+	* config/sh/sh.md (addc): Fix T bit set expression.
+	(subc): Likewise.
+
+2026-07-03  Avinash Jayakar  <avinashd@linux.ibm.com>
+
+	Backported from master:
+	2026-05-07  Avinash Jayakar  <avinashd@linux.ibm.com>
+
+	* config/rs6000/crypto.md (UNSPEC_XXAESENCP): New unspec entry.
+	(UNSPEC_XXAES128ENCP): Likewise.
+	(UNSPEC_XXAES192ENCP): Likewise.
+	(UNSPEC_XXAES256ENCP): Likewise.
+	(UNSPEC_XXAESDECP): Likewise.
+	(UNSPEC_XXAES128DECP): Likewise.
+	(UNSPEC_XXAES192DECP): Likewise.
+	(UNSPEC_XXAES256DECP): Likewise.
+	(UNSPEC_XXAESGENLKP): Likewise.
+	(UNSPEC_XXAES128GENLKP): Likewise.
+	(UNSPEC_XXAES192GENLKP): Likewise.
+	(UNSPEC_XXAES256GENLKP): Likewise.
+	(UNSPEC_XXGFMUL128): Likewise.
+	(UNSPEC_XXGFMUL128GCM): Likewise.
+	(UNSPEC_XXGFMUL128XTS): Likewise.
+	(AESACC_base_code): New iterator for xxaesencp and xxaesdecp base
+	mnemonics.
+	(AESACC_code): New iterator for xxaesencp and xxaesdecp extended
+	mnemonics.
+	(AESGENLKP_code): New iterator for xxaesgenlkp extended mnemonics.
+	(AESGF_code): New iterator for xxgfmul128 extended mnemonics.
+	(AESACC_base_insn): New attribute iterator for xxaesencp and xxaesdecp
+	base mnemonics.
+	(AESACC_insn): New attribute iterator for xxaesencp and xxaesdecp
+	extended mnemonics.
+	(AESGENLKP_insn): New attribute iterator for xxaesgenlkp extended
+	mnemonics.
+	(AESGF_insn): New attribute iterator for xxgfmul128 extended mnemonics.
+	(<AESACC_base_insn>): New define_insn for xxaesencp and xxaesdecp base
+	mnemonics.
+	(<AESACC_insn>): New define_insn for xxaesencp and xxaesdecp extended
+	mnemonics.
+	(<AESGENLKP_insn>): New define_insn for xxaesgenlkp extended mnemonics.
+	(xxaesgenlkp): New define_insn for genlkp base mnemonic.
+	(<AESGF_insn>): New define_insn for xxgfmul128 extended mnemonics.
+	(xxgfmul128): New define_insn for xxgfmul128 base mnemonic.
+	* config/rs6000/rs6000-builtins.def: Added new builtin definitions for
+	AES acceleration.
+	* doc/extend.texi: Add new section for AES acceleration builtins
+	for Future ISA.
+
+2026-07-03  Kishan Parmar  <kishan@linux.ibm.com>
+
+	Backported from master:
+	2026-06-23  Kishan Parmar  <kishan@linux.ibm.com>
+
+	* config/rs6000/rs6000-builtin.cc (rs6000_invalid_builtin): Handle
+	ENB_FUTURE_ALTIVEC and issue a diagnostic requiring -mcpu=future
+	and -maltivec.
+	(rs6000_builtin_is_supported): Check TARGET_FUTURE && TARGET_ALTIVEC
+	for ENB_FUTURE_ALTIVEC built-ins.
+	* config/rs6000/rs6000-gen-builtins.cc (enum bif_stanza): Add
+	BSTZ_FUTURE_ALTIVEC entry.
+	(stanza_map): Add future-altivec stanza mapping.
+	(enable_string): Add ENB_FUTURE_ALTIVEC.
+	(write_decls): Add ENB_FUTURE_ALTIVEC to the bif_enable enum in the
+	generated header file.
+
 2026-07-02  Xi Ruoyao  <xry111@xry111.site>
 
 	Backported from master:

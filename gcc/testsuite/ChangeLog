@@ -1,3 +1,160 @@
+2026-07-09  Harald Anlauf  <anlauf@gmx.de>
+
+	Backported from master:
+	2026-07-08  Harald Anlauf  <anlauf@gmx.de>
+
+	PR fortran/126127
+	* gfortran.dg/block_18.f90: New test.
+
+2026-07-09  Uros Bizjak  <ubizjak@gmail.com>
+
+	Backported from master:
+	2026-07-08  Uros Bizjak  <ubizjak@gmail.com>
+
+	PR target/126148
+	* gcc.target/i386/pr126148.c: New test.
+
+2026-07-09  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	Backported from master:
+	2026-07-07  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	PR fortran/103367
+	* gfortran.dg/pr103367_2.f90: New test.
+	* gfortran.dg/pr103367_3.f90: New test.
+	* gfortran.dg/pr103367_4.f90: New test.
+
+2026-07-08  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-07-06  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/125901
+	* g++.dg/reflect/type_trait16.C: New test.
+	* g++.dg/reflect/type_trait17.C: New test.
+	* g++.dg/reflect/type_trait18.C: New test.
+
+2026-07-08  Tamar Christina  <tamar.christina@arm.com>
+
+	Backported from master:
+	2026-06-12  Tamar Christina  <tamar.christina@arm.com>
+
+	PR tree-optimization/125597
+	* gcc.target/aarch64/pr125597.c: New test.
+
+2026-07-07  Stafford Horne  <shorne@gmail.com>
+
+	Backported from master:
+	2026-07-07  Stafford Horne  <shorne@gmail.com>
+
+	PR target/126081
+	* gcc.target/or1k/pr126081.c: New test.
+
+2026-07-07  Jeevitha  <jeevitha@linux.ibm.com>
+
+	Backported from master:
+	2026-07-01  Jeevitha Palanisamy  <jeevitha@linux.ibm.com>
+
+	* gcc.target/powerpc/vsx_arith_builtin-1.c: Remove inline asm
+	that forces operands into FPRs.
+	* gcc.target/powerpc/vsx_arith_builtin-2.c: Likewise.
+	* gcc.target/powerpc/vsx_arith_vect_1.c: Likewiswe.
+
+2026-07-07  Jeevitha  <jeevitha@linux.ibm.com>
+
+	Backported from master:
+	2026-06-24  Jeevitha Palanisamy  <jeevitha@linux.ibm.com>
+
+	* gcc.target/powerpc/vsx_arith_builtin-1.c: New test.
+	* gcc.target/powerpc/vsx_arith_builtin-2.c: Likewise.
+	* gcc.target/powerpc/vsx_arith_builtin-3.c: Likewise.
+	* gcc.target/powerpc/vsx_arith_builtin-4.c: Likewise.
+	* gcc.target/powerpc/vsx_arith_vect_1.c: Likewise.
+	* gcc.target/powerpc/vsx_arith_vect_2.c: Likewise.
+
+2026-07-07  Icenowy Zheng  <zhengxingda@iscas.ac.cn>
+
+	Backported from master:
+	2026-07-01  Icenowy Zheng  <zhengxingda@iscas.ac.cn>
+
+	PR target/126049
+	* gcc.target/riscv/rvv/autovec/pr126049.c: New.
+
+2026-07-06  Jason Merrill  <jason@redhat.com>
+
+	Backported from master:
+	2026-07-06  Jason Merrill  <jason@redhat.com>
+
+	PR c++/126031
+	PR c++/121552
+	* g++.dg/cpp2a/typedef2.C: New test.
+
+2026-07-06  Torbjörn SVENSSON  <torbjorn.svensson@foss.st.com>
+
+	Backported from master:
+	2026-07-06  Torbjörn SVENSSON  <torbjorn.svensson@foss.st.com>
+
+	* gcc.target/arm/tls-disable-literal-pool.c: Add quotation for
+	command line arguments.
+
+2026-07-06  liuhongt  <hongtao.liu@intel.com>
+
+	Backported from master:
+	2026-07-06  liuhongt  <hongtao.liu@intel.com>
+
+	PR target/126098
+	* gcc.target/i386/pr126098.c: New test.
+
+2026-07-05  Martin Uecker  <uecker@tugraz.at>
+
+	Backported from master:
+	2026-06-04  Martin Uecker  <uecker@tugraz.at>
+
+	PR c/125072
+	* gcc.dg/pr125072.c: New test.
+	* gcc.dg/ubsan/pointer-counted-by-bounds-124230-union.c: Avoid heap
+	corruption.
+	* gcc.dg/ubsan/pointer-counted-by-bounds-124230.c: Likewise.
+
+2026-07-05  Kees Cook  <kees@kernel.org>
+
+	Backported from master:
+	2026-06-19  Kees Cook  <kees@kernel.org>
+
+	PR c/125604
+	* gcc.dg/counted-by-unary.c: New test.
+
+2026-07-05  Martin Uecker  <uecker@tugraz.at>
+
+	Backported from master:
+	2026-06-03  Martin Uecker  <uecker@tugraz.at>
+
+	PR c/123569
+	* gcc.dg/pr123569.c: New test.
+
+2026-07-05  Oleg Endo  <olegendo@gcc.gnu.org>
+
+	PR target/67459
+	PR target/122948
+	* gcc.target/sh/pr122948.c: New test.
+
+2026-07-03  Avinash Jayakar  <avinashd@linux.ibm.com>
+
+	Backported from master:
+	2026-05-07  Avinash Jayakar  <avinashd@linux.ibm.com>
+
+	* gcc.target/powerpc/aes-builtin-1.c: New test.
+	* gcc.target/powerpc/aes-builtin-2.c: New test.
+	* gcc.target/powerpc/aes-builtin-3.c: New test.
+
+2026-07-03  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	Backported from master:
+	2026-07-03  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	PR fortran/126018
+	* gfortran.dg/stop_function_code_1.f90: New test.
+
 2026-07-02  Jason Merrill  <jason@redhat.com>
 
 	Backported from master:
