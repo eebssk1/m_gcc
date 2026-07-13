@@ -1,3 +1,52 @@
+2026-07-12  Paul Thomas  <pault@gcc.gnu.org>
+
+	Backported from master:
+	2026-05-07  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/125172
+	* gfortran.dg/associate_79.f90: New test.
+
+2026-07-11  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	Backported from master:
+	2026-07-11  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	PR fortran/126210
+	* gfortran.dg/pr126210.f90: New test.
+
+2026-07-11  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	Backported from master:
+	2026-07-10  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	PR fortran/126170
+	* gfortran.dg/lto/pr126170_0.f90: New test.
+	* gfortran.dg/lto/pr126170_1.f90: New test.
+
+2026-07-10  Martin Jambor  <mjambor@suse.cz>
+
+	Backported from master:
+	2026-06-18  Martin Jambor  <mjambor@suse.cz>
+
+	PR ipa/124128
+	* gcc.dg/ipa/pr124128.c: New test.
+
+2026-07-10  Stefan Schulze Frielinghaus  <stefansf@gcc.gnu.org>
+
+	Backported from master:
+	2026-07-01  Stefan Schulze Frielinghaus  <stefansf@gcc.gnu.org>
+
+	PR target/126054
+	* gcc.target/s390/pr126054.c: New test.
+
+2026-07-10  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	Backported from master:
+	2026-07-08  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	PR libfortran/126116
+	* gfortran.dg/pr126116.f90: New test.
+
 2026-07-09  Harald Anlauf  <anlauf@gmx.de>
 
 	Backported from master:
