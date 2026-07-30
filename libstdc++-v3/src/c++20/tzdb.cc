@@ -478,6 +478,8 @@ namespace std::chrono
 	select_std_or_dst_abbrev(info.abbrev, info.save);
     }
 
+    struct Rule;
+
     // A time zone information record.
     // Zone  NAME        STDOFF  RULES   FORMAT  [UNTIL]
     // Zone  Asia/Amman  2:00    Jordan  EE%sT   2017 Oct 27 01:00
@@ -487,12 +489,12 @@ namespace std::chrono
       ZoneInfo() = default;
 
       ZoneInfo(sys_info&& info)
-      : m_buf(std::move(info.abbrev)), m_expanded(true), m_save(info.save),
+      : m_buf(std::move(info.abbrev)), m_state(Expanded), m_save(info.save),
 	m_offset(info.offset - seconds(info.save)), m_until(info.end)
       { }
 
       ZoneInfo(const pair<sys_info, string_view>& info)
-      : m_expanded(true), m_save(info.first.save),
+      : m_state(Expanded), m_save(info.first.save),
 	m_offset(info.first.offset - seconds(info.first.save)),
        	m_until(info.first.end)
       {
@@ -528,17 +530,28 @@ namespace std::chrono
       sys_seconds
       until() const noexcept { return m_until; }
 
+      // For non-expanded zone (using rules) computes the value
+      // of 'save' at the time of transitions, caches it in m_save.
+      // Returns true if until value was changed in the process.
+      bool
+      calc_save(span<const Rule> all_rules) noexcept;
+
+      // save value at the transition boundary, usable if expanded()
+      // is true or after calc_save() was called.
+      seconds
+      save() const noexcept { return m_save; }
+
       friend istream& operator>>(istream&, ZoneInfo&);
 
       bool
       expanded() const noexcept
-      { return m_expanded; }
+      { return m_state == Expanded; }
 
       // For an expanded ZoneInfo this returns the LETTERS that apply to the
       // **next** sys_info after this one.
       string_view
       next_letters() const noexcept
-      { return m_expanded ? rules() : string_view{}; }
+      { return (m_state == Expanded) ? rules() : string_view{}; }
 
 
       bool
@@ -546,7 +559,7 @@ namespace std::chrono
       {
 	// If this object references a named Rule then we can't populate
 	// a sys_info yet.
-	if (!m_expanded)
+	if (m_state != Expanded)
 	  return false;
 
 	info.end = until();
@@ -560,12 +573,16 @@ namespace std::chrono
     private:
       friend class time_zone;
 
+      enum class State : uint_least16_t
+      { Expanded, SaveKnown, SavePending, UntilPending };
+      using enum State;
+
       void
       set_abbrev(string abbrev)
       {
 	m_buf = std::move(abbrev);
 	m_pos = 0;
-	m_expanded = true;
+	m_state = Expanded;
       }
 
       void
@@ -581,8 +598,8 @@ namespace std::chrono
       }
 
       string m_buf;     // rules() + ' ' + format() OR letters + ' ' + format()
-      uint_least16_t m_pos : 15 = 0; // offset of format() in m_buf
-      uint_least16_t m_expanded : 1 = 0;
+      uint_least16_t m_pos : 14 = 0; // offset of format() in m_buf
+      State m_state : 2 = SavePending;
       duration<int_least16_t, ratio<60>> m_save{};
       sec32_t m_offset{};
       sys_seconds m_until{};
@@ -690,14 +707,27 @@ namespace std::chrono
 #endif
     };
 
-    const Rule*
-    find_active_rule(span<const Rule> rules, sys_seconds t, seconds std_offset)
+    struct Transitions
     {
-      struct Transition {
+      struct Entry
+      {
 	const Rule* rule;
 	sys_seconds when;
       };
 
+      Entry prev{nullptr, sys_seconds::min()};
+      Entry curr{nullptr, sys_seconds::min()};
+      Entry next{nullptr, sys_seconds::max()};
+    };
+
+    // Collect transitions of rules surrounding specified time t:
+    // * .curr - rule active directly before or at t,
+    // * .prev - rule transition before trans.curr
+    // * .next - rule transition directly after t
+    Transitions
+    find_surrounding_transitions(span<const Rule> rules, sys_seconds t,
+				 seconds std_offset)
+    {
       const year_month_day date(chrono::floor<days>(t));
       // Expand the search window for a time near the end
       // of the year which can be pushed to next/previous
@@ -711,16 +741,7 @@ namespace std::chrono
 	if (date.month() == January && date.day() == day(1))
 	  --first_year;
 
-      // Rule specifying start time as Wall time, should apply
-      // running 'save' accumulated by earlier rules. To handle
-      // that we firstly collect transitions surrounding specified
-      // time t, ignoring the 'save':
-      // * curr_tran - rule active directly before or at t,
-      // * prev_tran - rule transition before curr_tran
-      // * next_tran - rule transition directly after t
-      Transition prev_tran{nullptr, sys_seconds::min()};
-      Transition curr_tran{nullptr, sys_seconds::min()};
-      Transition next_tran{nullptr, sys_seconds::max()};
+      Transitions trans;
       for (const auto& rule : rules)
 	{
 	  if (last_year < rule.from) // Rule doesn't apply yet at time t.
@@ -756,7 +777,7 @@ namespace std::chrono
 
 	  if (first_year > rule.to)
 	    // Rule no longer applies at time t, record last transition
-            start_before = rule.start_time(rule.to, offset);
+	    start_before = rule.start_time(rule.to, offset);
 	  else if (first_year == last_year)
 	    for_year(first_year);
 	  else
@@ -768,24 +789,35 @@ namespace std::chrono
 	       for_year(last_year);
 	   }
 
-	  if (curr_tran.when < start_before)
+	  if (trans.curr.when < start_before)
 	    {
-	      prev_tran = curr_tran;
-	      curr_tran = {&rule, start_before};
+	      trans.prev = trans.curr;
+	      trans.curr = {&rule, start_before};
 	    }
-	  else if (prev_tran.when < start_before)
-	    prev_tran = {&rule, start_before};
+	  else if (trans.prev.when < start_before)
+	    trans.prev = {&rule, start_before};
 
-	  if (start_after < next_tran.when)
-	    next_tran = {&rule, start_after};
+	  if (start_after < trans.next.when)
+	    trans.next = {&rule, start_after};
 	}
+      return trans;
+    }
+
+    const Rule*
+    find_active_rule(span<const Rule> rules, sys_seconds t, seconds std_offset)
+    {
+      // Rule specifying start time as Wall time, should apply
+      // running 'save' accumulated by earlier rules. To handle
+      // that we firstly collect transitions surrounding specified
+      // time t:
+      auto trans = find_surrounding_transitions(rules, t, std_offset);
 
       // No rule was active at the time of t, running 'save'
       // cannot change this output, as we have no save to apply.
-      if (!curr_tran.rule)
+      if (!trans.curr.rule)
 	return nullptr;
 
-      auto cascade_save = [](const Rule* from, Transition& to)
+      auto cascade_save = [](const Rule* from, Transitions::Entry& to)
       {
 	if (!from || from->save == seconds(0))
 	  return false;
@@ -795,19 +827,53 @@ namespace std::chrono
 	return true;
       };
 
-      if (cascade_save(curr_tran.rule, next_tran))
-	// Running save moved what we considered next_tran to time
-	// before or at t, in that case next_tran is active rule.
-	if (next_tran.when <= t)
-	  return next_tran.rule;
+      if (cascade_save(trans.curr.rule, trans.next))
+	// Running save moved what we considered trans.next to time
+	// before or at t, in that case trans.next is active rule.
+	if (trans.next.when <= t)
+	  return trans.next.rule;
 
-      if (cascade_save(prev_tran.rule, curr_tran))
-	// Running save moved what we consider curr_tran to
-	// time after t, in that case prev_tran is active rule.
-	if (curr_tran.when > t)
-	  return prev_tran.rule;
+      if (cascade_save(trans.prev.rule, trans.curr))
+	// Running save moved what we consider trans.curr to
+	// time after t, in that case trans.prev is active rule.
+	if (trans.curr.when > t)
+	  return trans.prev.rule;
 
-      return curr_tran.rule;
+      return trans.curr.rule;
+    }
+
+    const Rule*
+    find_active_rule(span<const Rule> rules, local_seconds t, seconds std_offset)
+    {
+      // UNTIL or START time in local time should take a 'save' from
+      // active rule. To handle tapproximate system time at, and
+      // collect transitions surrounding it:
+      const sys_seconds at(t.time_since_epoch() - std_offset);
+      const auto trans = find_surrounding_transitions(rules, at, std_offset);
+
+      auto to_local = [&](const Transitions::Entry& tran, const Rule* before)
+      {
+	local_seconds ls(tran.when.time_since_epoch());
+	if (!tran.rule)
+	  // 'when' is either min() or max(), and applying std_offset overflows.
+	  return ls;
+
+	ls += std_offset;
+	if (!before || tran.rule->when.indicator == at_time::Wall)
+	  // no active rule or 'when' was converted from local time without
+	  // considering running 'save' in first place
+	  return ls;
+
+	return ls + before->save;
+      };
+
+      // Translate the transitions time to local time, taking 'save'
+      // into consideration, and recheck active rule.
+      if (to_local(trans.next, trans.curr.rule) <= t)
+	return trans.next.rule;
+      if (to_local(trans.curr, trans.prev.rule) > t)
+	return trans.prev.rule;
+      return trans.curr.rule;
     }
 
     const Rule*
@@ -829,6 +895,43 @@ namespace std::chrono
 	    first = &next;
 	}
       return first;
+    }
+
+    bool
+    ZoneInfo::calc_save(span<const Rule> all_rules) noexcept
+    {
+      // Expanded rule, or the save value was already computed.
+      if (m_state < SavePending)
+	return false;
+
+      // Find the rules named by rules()
+      span<const Rule> sel_rules
+	= ranges::equal_range(all_rules, rules(), ranges::less{}, &Rule::name);
+      if (sel_rules.empty())
+	__throw_runtime_error("std::chrono::time_zone::get_info: invalid data");
+
+      if (m_state == UntilPending)
+	{
+	  // UNTIL was specified in Wall time, so it is affected by 'save'.
+	  // Convert it back to local time, and find active rule using that.
+	  const local_seconds lu(m_until.time_since_epoch() + m_offset);
+	  if (const Rule* rule = find_active_rule(sel_rules, lu - seconds(1), m_offset))
+	    if (rule->save.count() != 0)
+	      {
+		m_state = SaveKnown;
+		m_save = duration_cast<minutes>(rule->save);
+		m_until -= rule->save;
+		return true;
+	      }
+	 }
+      else
+	// UNTIL was either specified in Universal time, or Standard
+	// time (known total offset). m_until is corresponding sys_time point.
+	if (const Rule* rule = find_active_rule(sel_rules, m_until - seconds(1), m_offset))
+	  m_save = duration_cast<minutes>(rule->save);
+
+      m_state = SaveKnown;
+      return false;
     }
   } // namespace
 #endif // TZDB_DISABLED
@@ -966,7 +1069,7 @@ namespace std::chrono
 	if (infos.empty())
 	  __throw_runtime_error("std::chrono::time_zone::get_info: invalid data");
 	tp = (--i)->until();
-    }
+      }
 
     sys_info info;
 
@@ -985,10 +1088,10 @@ namespace std::chrono
     const ZoneInfo& ri = *i;
 
     // Find the rules named by ri.rules()
-    auto rules = ranges::equal_range(node->rules, ri.rules(),
-				     ranges::less{}, &Rule::name);
+    span<const Rule> rules = ranges::equal_range(node->rules, ri.rules(),
+						 ranges::less{}, &Rule::name);
 
-    if (ranges::empty(rules))
+    if (rules.empty())
       __throw_runtime_error("std::chrono::time_zone::get_info: invalid data");
 
     vector<pair<sys_info, string_view>> new_infos;
@@ -1003,12 +1106,9 @@ namespace std::chrono
     // This is true by construction, because this function always tries to
     // finish so that the last ZoneInfo object expanded is for daylight time.
     // This means that i[-1] is either an expanded ZoneInfo for a DST sys_info
-    // or is an unexpanded (rule-based) ZoneInfo for a different rule, and
-    // rule changes always occur between periods of standard time.
+    // or is an unexpanded (rule-based) ZoneInfo for a different rule.
     info.offset = ri.offset();
     info.save = 0min;
-    // XXX The ri.until() time point should be
-    // "interpreted using the rules in effect just before the transition"
     info.end = ri.until();
     info.abbrev = ri.format();
 
@@ -1030,6 +1130,18 @@ namespace std::chrono
 	  }
 	else if (const Rule* first_std = find_first_std(rules))
 	  letters = first_std->letters;
+      }
+
+    // For transitions, that leads to backward jump in the local time,
+    // and window of duplicated local time, the rule transition occurring
+    // during that window are considered to apply immediately at the boundary.
+    // This window is [info.begin, info.begin + merge_window].
+    seconds merge_window(0);
+    if (i != infos.begin())
+      {
+	const auto prev_offset = i[-1].offset() + i[-1].save();
+	if (prev_offset > info.offset)
+	  merge_window = prev_offset - info.offset;
       }
 
     const Rule* curr_rule = nullptr;
@@ -1077,9 +1189,6 @@ namespace std::chrono
 
 	    if (t < rule_start && rule_start < info.end)
 	      {
-		if (rule_start - t < days(1)) // XXX shouldn't be needed!
-		  continue;
-
 		// Found a closer transition than the previous info.end.
 		info.end = rule_start;
 		next_rule = &rule;
@@ -1088,41 +1197,34 @@ namespace std::chrono
 
 	format_abbrev_str(info, letters);
 
-	bool merged = false;
-#if 0
-	if (!new_infos.empty())
-	  {
-	    auto& back = new_infos.back();
-	    if (back.offset == info.offset && back.abbrev == info.abbrev
-		  && back.save == info.save)
-	      {
-		// This is a continuation of the previous sys_info.
-		back.end = info.end;
-		merged = true;
-	      }
-	  }
-#endif
-
 	if (next_rule)
 	  letters = next_rule->letters;
 	else
 	  letters = {};
 
-	if (!merged)
-	  new_infos.emplace_back(info, letters);
-
-	if (info.begin <= tp && tp < info.end) // Found the result.
-	  result_index = new_infos.size() - 1;
-	else if (result_index >= 0 && !merged)
+	// Transitions occuring in the backward jump time window occuring
+	// on zone transitions should be folded into zone change.
+	if (info.end - t <= merge_window)
+	  info.begin = t;
+	else
 	  {
-	    // Finish before a STD sys_info if possible, so that if we resume
-	    // generating sys_info objects after this time point, save=0
-	    // should be correct for the next sys_info.
-	    if (num_after > 1 || !next_rule || next_rule->save == 0s)
-	      --num_after;
-	  }
+	    new_infos.emplace_back(info, letters);
 
-	info.begin = info.end;
+	    if (info.begin <= tp && tp < info.end) // Found the result.
+	      result_index = new_infos.size() - 1;
+	    else if (result_index >= 0)
+	      {
+		// Finish before a STD sys_info if possible, so that if we resume
+		// generating sys_info objects after this time point, save=0
+		// should be correct for the next sys_info.
+		if (num_after > 1 || !next_rule || next_rule->save == 0s)
+		  --num_after;
+	      }
+
+	    info.begin = info.end;
+	  }
+	merge_window = seconds(0);
+
 	if (next_rule)
 	  {
 	    info.end = ri.until();
@@ -1925,6 +2027,11 @@ constinit tzdb_list::_Node::NumLeapSeconds tzdb_list::_Node::num_leap_seconds;
       return lhs.save < rhs.save;
     });
 
+    // Calculate the SAVE value at UNTIL, and adjust it if necessary.
+    for (time_zone& tz : node->db.zones)
+      for (ZoneInfo& info : tz._M_impl->infos)
+	info.calc_save(node->rules);
+
     return Node::_S_replace_head(std::move(head), std::move(node));
 #else
     __throw_disabled();
@@ -2630,6 +2737,7 @@ constinit tzdb_list::_Node::NumLeapSeconds tzdb_list::_Node::num_leap_seconds;
 	  if (rules == "-")
 	    {
 	      // Standard time always applies, no DST.
+	      inf.m_save = minutes(0);
 	    }
 	  else
 	    {
@@ -2663,14 +2771,20 @@ constinit tzdb_list::_Node::NumLeapSeconds tzdb_list::_Node::num_leap_seconds;
 	      inf.m_until -= seconds(inf.m_offset);
 	      if (t.indicator != at_time::Standard)
 		{
-		  if (inf.m_expanded) // Not a named Rule, SAVE is known now.
+		  if (inf.expanded()) // Not a named Rule, SAVE is known now.
 		    inf.m_until -= inf.m_save;
-		  // else Named Rule, SAVE is unknown. FIXME: PR 116110
+		  else // else Named Rule, SAVE is unknown, mark as pending
+		    inf.m_state = ZoneInfo::UntilPending;
 		}
 	    }
 	}
       else
-	inf.m_until = sys_days(year::max()/December/31);
+	{
+	  inf.m_until = sys_days(year::max()/December/31);
+	  // The line does not define UNTIL, so it is not affected by save
+	  if (!inf.expanded())
+	    inf.m_state = ZoneInfo::SaveKnown;
+	}
 
       in.clear(in.rdstate() & ios::eofbit);
       in.exceptions(ex);

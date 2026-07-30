@@ -82,7 +82,7 @@ test_negative()
   std::ofstream("tzdata.zi") << R"(# version test_negative_cascade
 R Fr 1945 o - Apr 2  2 -3 M
 R Fr 1945 o - Sep 16 0 0 -
-Z Test/Negative 0  -  X     1945 Sep 16 1u
+Z Test/Negative -2  -  X     1945 Sep 16 1u
              1  Fr CE%sT
 )";
 
@@ -109,11 +109,9 @@ Z Test/Negative 0  -  X     1945 Sep 16 1u
   // Test the firing of Sep 16 rule
   auto at_sep_rule = tz->get_info(sys_seconds{
     sys_days(1945y/September/16) + 2h});
-  // The transition_window < 1d condition triggers, and
-  // transition is ignored.
-  // VERIFY( at_sep_rule.offset == 1h );
-  // VERIFY( at_sep_rule.save == 0h );
-  // VERIFY( at_sep_rule.abbrev == "CET" );
+  VERIFY( at_sep_rule.offset == 1h );
+  VERIFY( at_sep_rule.save == 0h );
+  VERIFY( at_sep_rule.abbrev == "CET" );
 }
 
 void
@@ -137,13 +135,34 @@ Z Pacific/AucklandUT 11:39:4 - LMT 1868 N 2
   VERIFY( override_used ); // If this fails then XFAIL for the target.
   VERIFY( db.version == "test_next_year" );
 
-  // Pacific/Auckland requires both PR124854 and PR116110 to work
-  // correctly. TODO test it once implemented.
-  // The UT version uses 1945-12-31 13:00:00 UT after
-  // the rule application change.
-  auto* utz = locate_zone("Pacific/AucklandUT");
+  // The time zone change happens at 1945-12-31 12:00:00 UT, as
+  // total offset is 11:30 + 0:30
+  auto* tz = locate_zone("Pacific/Auckland");
 
   // Before the change
+  auto before_boundary
+   = tz->get_info(sys_seconds{sys_days(1945y/December/31) + 12h - 1s});
+  VERIFY( before_boundary.offset == 12h );
+  VERIFY( before_boundary.save == 30min );
+  VERIFY( before_boundary.abbrev == "NZST" );
+
+  // The Jan 1 rule is immediatelly in effect
+  auto at_boundary
+    = tz->get_info(sys_seconds{sys_days(1945y/December/31) + 12h});
+  VERIFY( at_boundary.offset == 12h );
+  VERIFY( at_boundary.save == 0h );
+  VERIFY( at_boundary.abbrev == "NZST" );
+
+  auto after_boundary
+    = tz->get_info(sys_seconds{sys_days(1945y/December/31) + 13h});
+  VERIFY( after_boundary.offset == 12h );
+  VERIFY( after_boundary.save == 0h );
+
+  // The UT version uses 1945-12-31 13:00:00 UT after the rule
+  // Jan 1 1946 rule application.
+  auto* utz = locate_zone("Pacific/AucklandUT");
+
+  // Before the Jan 1 rule application
   auto before_utboundary
    = utz->get_info(sys_seconds{sys_days(1945y/December/31) + 11h});
   VERIFY( before_utboundary.offset == 12h );
@@ -261,6 +280,78 @@ Z Europe/Lisbon -0:36:45 - LMT 1884
   VERIFY( at_boundary.abbrev == "WET" );
 }
 
+void
+test_last_transition()
+{
+   std::ofstream("tzdata.zi") << R"(# version test_bishkek
+R R 1984 1995 - S lastSu 2s 0 -
+R R 1985 2010 - Mar lastSu 2s 1 S
+R R 1996 2010 - O lastSu 2s 0 -
+R KG 1992 1996 - Ap Su>=7 0s 1 -
+R KG 1992 1996 - S lastSu 0 0 -
+R KG 1997 2005 - Mar lastSu 2:30 1 -
+R KG 1997 2004 - O lastSu 2:30 0 -
+Z Test/Bishkek 4:58:24 - LMT 1924 May 2
+5 R %z 1991 Au 31 2
+5 KG %z 2005 Au 12
+   )";
+
+  const auto& db = reload_tzdb();
+  VERIFY( override_used ); // If this fails then XFAIL for the target.
+  VERIFY( db.version == "test_bishkek" );
+
+  auto* tz = locate_zone("Test/Bishkek");
+
+  sys_seconds transitions[]{
+    sys_seconds{sys_days{1991y/August/30}} + 20h, // from 5 R %z 1991 Au 31 2
+    sys_seconds{sys_days{1992y/April/11}} + 19h,
+    sys_seconds{sys_days{1992y/September/26}} + 18h,
+    sys_seconds{sys_days{1993y/April/10}} + 19h,
+    sys_seconds{sys_days{1993y/September/25}} + 18h,
+    sys_seconds{sys_days{1994y/April/9}} + 19h,
+    sys_seconds{sys_days{1994y/September/24}} + 18h,
+    sys_seconds{sys_days{1995y/April/8}} + 19h,
+    sys_seconds{sys_days{1995y/September/23}} + 18h,
+    sys_seconds{sys_days{1996y/April/6}} + 19h,
+    sys_seconds{sys_days{1996y/September/28}} + 18h,
+    sys_seconds{sys_days{1997y/March/29}} + 21h + 30min,
+    sys_seconds{sys_days{1997y/October/25}} + 20h + 30min,
+    sys_seconds{sys_days{1998y/March/28}} + 21h + 30min,
+    sys_seconds{sys_days{1998y/October/24}} + 20h + 30min,
+    sys_seconds{sys_days{1999y/March/27}} + 21h + 30min,
+    sys_seconds{sys_days{1999y/October/30}} + 20h + 30min,
+    sys_seconds{sys_days{2000y/March/25}} + 21h + 30min,
+    sys_seconds{sys_days{2000y/October/28}} + 20h + 30min,
+    sys_seconds{sys_days{2001y/March/24}} + 21h + 30min,
+    sys_seconds{sys_days{2001y/October/27}} + 20h + 30min,
+    sys_seconds{sys_days{2002y/March/30}} + 21h + 30min,
+    sys_seconds{sys_days{2002y/October/26}} + 20h + 30min,
+    sys_seconds{sys_days{2003y/March/29}} + 21h + 30min,
+    sys_seconds{sys_days{2003y/October/25}} + 20h + 30min,
+    sys_seconds{sys_days{2004y/March/27}} + 21h + 30min,
+    sys_seconds{sys_days{2004y/October/30}} + 20h + 30min,
+    sys_seconds{sys_days{2005y/March/26}} + 21h + 30min,
+    sys_seconds{sys_days{2005y/August/11}} + 18h, // 5 KG %z 2005 Au 12 
+  };
+
+  for (size_t i = 1; i < std::size(transitions); ++i)
+    {
+      const minutes save = (i % 2) ? 0h : 1h;
+      const sys_seconds t = transitions[i-1];
+      const sys_info info = tz->get_info(t);
+      VERIFY( info.begin == t );
+      VERIFY( info.offset == 5h + save );
+      VERIFY( info.save == save );
+      VERIFY( info.end == transitions[i] );
+    }
+
+  // The transition 2005 Au 12 has total offset 6 (5h + 1h).
+  sys_seconds t = transitions[std::size(transitions)-1];
+  const sys_info info = tz->get_info(t);
+  VERIFY( info.offset == 6h );
+  VERIFY( info.save == 1h );
+}
+
 int
 main()
 {
@@ -270,4 +361,5 @@ main()
   test_prev_year();
   test_earlier_year();
   test_at_boundary();
+  test_last_transition();
 }

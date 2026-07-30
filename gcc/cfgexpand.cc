@@ -155,10 +155,11 @@ gimple_assign_rhs_to_tree (gimple *stmt)
 /* Choose either CUR or NEXT as the leader DECL for a partition.
    Prefer ignored decls, to simplify debug dumps and reduce ambiguity
    out of the same user variable being in multiple partitions (this is
-   less likely for compiler-introduced temps).  */
+   less likely for compiler-introduced temps).  Also used by out-of-SSA
+   to work out which variable a partition will be given.  */
 
-static tree
-leader_merge (tree cur, tree next)
+tree
+expand_leader_merge (tree cur, tree next)
 {
   if (cur == NULL || cur == next)
     return next;
@@ -251,7 +252,8 @@ set_rtl (tree t, rtx x)
       else
 	gcc_unreachable ();
 
-      tree next = skip ? cur : leader_merge (cur, SSAVAR (t) ? SSAVAR (t) : t);
+      tree next
+	= skip ? cur : expand_leader_merge (cur, SSAVAR (t) ? SSAVAR (t) : t);
 
       if (cur != next)
 	{
@@ -2458,6 +2460,31 @@ stack_protect_return_slot_p ()
 	  return true;
       }
   return false;
+}
+
+/* Verify that partitions which claim to be the same object really are at the
+   same address.  MEM_EXPR-based disambiguation identifies a location by a
+   MEM_EXPR base and an offset from it, so two stack slots carrying one
+   MEM_EXPR read as a single object, which lets an access to one be redirected
+   to the other.  out-of-SSA keeps them apart, see the comment above
+   split_overlapping_partition_decls.  */
+
+static void
+verify_partition_mem_exprs (void)
+{
+  hash_map<tree, rtx> slots;
+  for (unsigned i = 0; i < num_var_partitions (SA.map); i++)
+    {
+      rtx x = SA.partition_to_pseudo[i];
+      if (!x || !MEM_P (x) || !MEM_EXPR (x))
+	continue;
+      bool existed;
+      rtx &known = slots.get_or_insert (MEM_EXPR (x), &existed);
+      if (!existed)
+	known = x;
+      else
+	gcc_assert (rtx_equal_p (XEXP (known, 0), XEXP (x, 0)));
+    }
 }
 
 /* Expand all variables used in the function.  */
@@ -7169,6 +7196,9 @@ pass_expand::execute (function *fun)
 
       adjust_one_expanded_partition_var (name);
     }
+
+  if (flag_checking)
+    verify_partition_mem_exprs ();
 
   /* Clean up RTL of variables that straddle across multiple
      partitions, and check that the rtl of any PARM_DECLs that are not
