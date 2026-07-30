@@ -639,6 +639,20 @@ merge_and_complain (vec<cl_decoded_option> &decoded_options,
 
 	if (existing_opt == NULL && existing_opt2 == NULL)
 	  break;
+	else if ((existing_opt != NULL && strncmp(existing_opt->arg, "-O", 2) == 0) ||
+		 (existing_opt2 != NULL && strncmp(existing_opt2->arg, "-O", 2) == 0))
+	  {
+		if ((existing_opt != NULL && existing_opt2 != NULL) &&
+		    (strncmp(existing_opt->arg, existing_opt2->arg, 3) != 0))
+		  {
+		    warning(0,"%<-Xassembler%> Optimize option mismatch! a: %s b: %s, continue with default.",
+		            existing_opt->arg, existing_opt2->arg);
+		    continue;
+		  }
+	    warning(0,"%<-Xassembler%> Optimize option %s missing in another, continue with default.",
+	            existing_opt != NULL ? existing_opt->arg : existing_opt2->arg);
+	    continue;
+	  }
 	else if (existing_opt != NULL && existing_opt2 == NULL)
 	  {
 	    warning (0, "Extra option to %<-Xassembler%>: %s,"
