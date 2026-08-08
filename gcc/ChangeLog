@@ -1,3 +1,101 @@
+2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/126667
+	* config/s390/s390.md (usubc<mode>5): If operands[4] is
+	an immediate operand other than const0_rtx, force it into reg
+	before using it in xor<mode>3 insn.
+
+2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-04  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/126601
+	* tree-ssa-math-opts.cc (maybe_optimize_guarding_check): Use safe_push
+	on mul_stmts rather than quick_push.
+
+2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-04  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/126564
+	* tree-ssa-phiopt.cc (spaceship_replacement): Fix up condition
+	when to punt because of redundant cmp1 with cmp2, xor in
+	lhs1 == lhs2 with difference of cmp2 from cmp1 (ignoring
+	LT_EXPR vs. LE_EXPR and GT_EXPR vs. GE_EXPR differences) and
+	1 if cond2_phi_edge is EDGE_FALSE_VALUE.
+
+2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-04  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/126549
+	* range-op-float.cc (operator_cast::fold_range): Don't call
+	frange_drop_infs.
+
+2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-03  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/126484
+	* config/mips/mips-ftypes.def (MIPS_SI_FTYPE_VOID,
+	MIPS_USI_FTYPE_VOID): Use DEF_MIPS_FTYPE with 0 as
+	first argument rather than 1 and leave out ", VOID" from
+	second argument.
+	* config/mips/mips.cc (MIPS_FTYPE_NAME0): Define.
+	(MIPS_FTYPE_ATYPES0): Define.
+
+2026-08-07  Release Manager
+
+	* GCC 16.2.0 released.
+
+2026-08-06  Jakub Jelinek  <jakub@redhat.com>
+
+	Revert:
+	2026-07-29  Kyrylo Tkachov  <ktkachov@nvidia.com>
+
+	PR middle-end/126405
+	* cfgexpand.cc (verify_partition_mem_exprs): New function.
+	(pass_expand::execute): Call it.
+
+2026-08-04  Jin Ma  <jinma@linux.alibaba.com>
+
+	Backported from master:
+	2026-07-16  Jin Ma  <jinma@linux.alibaba.com>
+
+	* config/riscv/riscv.cc (riscv_regno_to_class): Map t1 to
+	JALR_REGS.
+	* config/riscv/riscv.h (RISCV_PROLOGUE_TEMP_REGNUM): Document
+	the SIBCALL_REGS restriction.
+	(REG_CLASS_CONTENTS): Remove t1 from SIBCALL_REGS.
+
+2026-08-03  Hu, Lin1  <lin1.hu@intel.com>
+
+	PR target/126581
+	* config/i386/avx10_2satcvtintrin.h
+	(_mm_cvtts_sd_epi32): New alias of _mm_cvtts_sd_i32.
+	(_mm_cvtts_sd_epu32): New alias of _mm_cvtts_sd_u32.
+	(_mm_cvtts_ss_epi32): New alias of _mm_cvtts_ss_i32.
+	(_mm_cvtts_ss_epu32): New alias of _mm_cvtts_ss_u32.
+	(_mm_cvtts_roundsd_epi32): New alias of _mm_cvtts_roundsd_i32.
+	(_mm_cvtts_roundsd_epu32): New alias of _mm_cvtts_roundsd_u32.
+	(_mm_cvtts_roundss_epi32): New alias of _mm_cvtts_roundss_i32.
+	(_mm_cvtts_roundss_epu32): New alias of _mm_cvtts_roundss_u32.
+	(_mm_cvtts_sd_epi64): New alias of _mm_cvtts_sd_i64.
+	(_mm_cvtts_sd_epu64): New alias of _mm_cvtts_sd_u64.
+	(_mm_cvtts_ss_epi64): New alias of _mm_cvtts_ss_i64.
+	(_mm_cvtts_ss_epu64): New alias of _mm_cvtts_ss_u64.
+	(_mm_cvtts_roundsd_epi64): New alias of _mm_cvtts_roundsd_i64.
+	(_mm_cvtts_roundsd_epu64): New alias of _mm_cvtts_roundsd_u64.
+	(_mm_cvtts_roundss_epi64): New alias of _mm_cvtts_roundss_i64.
+	(_mm_cvtts_roundss_epu64): New alias of _mm_cvtts_roundss_u64.
+
 2026-07-31  Jakub Jelinek  <jakub@redhat.com>
 
 	Backported from master:
