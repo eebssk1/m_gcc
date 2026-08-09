@@ -90,6 +90,7 @@ static char *makefile;
 static unsigned int num_deb_objs;
 static const char **early_debug_object_names;
 static bool xassembler_options_error = false;
+static bool xassembler_opt_warned = false;
 
 const char tool_name[] = "lto-wrapper";
 
@@ -642,15 +643,28 @@ merge_and_complain (vec<cl_decoded_option> &decoded_options,
 	else if ((existing_opt != NULL && strncmp(existing_opt->arg, "-O", 2) == 0) ||
 		 (existing_opt2 != NULL && strncmp(existing_opt2->arg, "-O", 2) == 0))
 	  {
-		if ((existing_opt != NULL && existing_opt2 != NULL) &&
-		    (strncmp(existing_opt->arg, existing_opt2->arg, 3) != 0))
+	    /* Optimize flags passed to the assembler are not recorded in
+	       LTO objects, so they may legitimately be missing or differ
+	       between input files.  Keep the assembler options instead of
+	       dropping them all and complain only once.  */
+	    if (existing_opt == NULL || existing_opt2 == NULL
+		|| strcmp (existing_opt->arg, existing_opt2->arg) != 0)
+	      {
+		if (!xassembler_opt_warned)
 		  {
-		    warning(0,"%<-Xassembler%> Optimize option mismatch! a: %s b: %s, continue with default.",
-		            existing_opt->arg, existing_opt2->arg);
-		    continue;
+		    xassembler_opt_warned = true;
+		    if (existing_opt != NULL && existing_opt2 != NULL)
+		      warning (0, "Optimize options to %<-Xassembler%> do not"
+			       " match: %s, %s, keeping them as-is.",
+			       existing_opt->arg, existing_opt2->arg);
+		    else
+		      warning (0, "Optimize option to %<-Xassembler%>: %s,"
+			       " missing in another input file,"
+			       " keeping it as-is.",
+			       existing_opt != NULL ? existing_opt->arg
+						    : existing_opt2->arg);
 		  }
-	    warning(0,"%<-Xassembler%> Optimize option %s missing in another, continue with default.",
-	            existing_opt != NULL ? existing_opt->arg : existing_opt2->arg);
+	      }
 	    continue;
 	  }
 	else if (existing_opt != NULL && existing_opt2 == NULL)
