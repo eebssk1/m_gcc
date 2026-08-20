@@ -1,3 +1,51 @@
+2026-08-19  Alice Carlotti  <alice.carlotti@arm.com>
+
+	PR target/124629
+	* config/aarch64/driver-aarch64.cc (AARCH64_ARCH):
+	Don't skip first character of #ARCH_IDENT.
+
+2026-08-19  Richard Biener  <rguenther@suse.de>
+
+	Backported from master:
+	2026-08-18  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/126925
+	* tree-ssa-loop-ivopts.cc (create_new_iv): Avoid crashing
+	if the use IV is invariant.
+
+2026-08-19  Richard Biener  <rguenther@suse.de>
+
+	Backported from master:
+	2026-08-05  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/126650
+	* tree-affine.cc (get_inner_reference_aff): Fixup rounding
+	of size.
+
+2026-08-19  Richard Biener  <rguenther@suse.de>
+
+	Backported from master:
+	2026-08-18  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/126926
+	* tree-vect-slp.cc (vectorize_slp_instance_root_stmt): Only
+	replace the RHS of the vector constructing scalar stmt.
+
+2026-08-18  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-07  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/126534
+	* gimple-range-op.cc (cfn_sqrt::op1_range): Widen lb or ub
+	by further 0.5ulp or 1ulp before squaring it.
+	* range-op-float.cc (float_widen_lhs_range): No longer static.
+
+2026-08-17  Ramin Moussavi  <lordrasmus@gmail.com>
+
+	* config/microblaze/microblaze.h (DWARF_ALT_FRAME_RETURN_COLUMN):
+	Define.
+
 2026-08-14  Kito Cheng  <kito.cheng@sifive.com>
 
 	Backported from master:
