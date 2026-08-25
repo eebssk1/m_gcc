@@ -1,3 +1,117 @@
+2026-08-24  Jason Merrill  <jason@redhat.com>
+
+	Backported from master:
+	2026-08-22  Jason Merrill  <jason@redhat.com>
+
+	PR c++/124888
+	* g++.dg/modules/typeid-2_a.C: New test.
+	* g++.dg/modules/typeid-2_b.C: New test.
+
+2026-08-24  Jin Ma  <jinma@linux.alibaba.com>
+
+	Backported from master:
+	2026-08-21  Jin Ma  <jinma@linux.alibaba.com>
+
+	PR target/126873
+	* gcc.target/riscv/pr126873.c: New test.
+
+2026-08-24  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	Backported from master:
+	2026-08-14  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	PR rtl-optimization/126426
+	* gcc.target/riscv/pr126426.c: New test.
+
+2026-08-24  Eric Botcazou  <ebotcazou@adacore.com>
+
+	* gnat.dg/array43.adb: New test.
+
+2026-08-24  Paul Thomas  <pault@gcc.gnu.org>
+
+	Backported from master:
+	2026-06-03  Steven G. Kargl  <kargl@gcc.gnu.org>
+
+	PR fortran/105594
+	* gfortran.dg/pr105594.f90: New test.
+
+2026-08-24  Paul Thomas  <pault@gcc.gnu.org>
+
+	Backported from master:
+	2026-06-02  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/88632
+	PR fortran/104630
+	* gfortran.dg/submodule_35.f90: New test.
+	* gfortran.dg/submodule_35_aux.f90: Submodule and program for
+	for the new test.
+	Assisted by: Claude Sonnet 4.6
+
+2026-08-24  Georg-Johann Lay  <avr@gjlay.de>
+
+	Backported from master:
+	2026-08-23  Georg-Johann Lay  <avr@gjlay.de>
+
+	PR target/127004
+	* gcc.target/avr/torture/pr127004.c: New test.
+
+2026-08-21  Torbjörn SVENSSON  <torbjorn.svensson@foss.st.com>
+
+	Backported from master:
+	2026-08-19  Torbjörn SVENSSON  <torbjorn.svensson@foss.st.com>
+
+	* gcc.target/arm/cmse/cmse-18.c: Use effective-target
+	arm_arch_v8m_main.
+	* gcc.target/arm/cmse/cmse-19.c: Use effective-target
+	arm_arch_v8_1m_mve.
+	* lib/target-supports.exp: Define effective-target
+	arm_arch_v8m_main.
+
+2026-08-20  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-07-30  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/126335
+	* g++.dg/init/array68.C: New test.
+
+2026-08-20  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-08-03  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/124794
+	* g++.dg/reflect/splice17.C: New test.
+
+2026-08-20  Marek Polacek  <polacek@redhat.com>
+
+	Backported from master:
+	2026-08-03  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/126546
+	* g++.dg/reflect/pack-index1.C: Accept a reflection of a
+	pack-index-specifier.  Reject a reflection of a
+	pack-index-expression.
+	* g++.dg/reflect/pack-index2.C: New test.
+
+2026-08-20  Hongyu Wang  <hongyu.wang@intel.com>
+
+	Backported from master:
+	2026-08-12  Hongyu Wang  <hongyu.wang@intel.com>
+
+	PR target/126787
+	* gcc.target/i386/pr126787.c: New test.
+
+2026-08-20  Avinash Jayakar  <avinashd@linux.ibm.com>
+
+	Backported from master:
+	2026-08-10  Avinash Jayakar  <avinashd@linux.ibm.com>
+
+	PR target/126513
+	* gcc.target/powerpc/pr126513-acmp-tst-1.c: New test.
+	* gcc.target/powerpc/pr126513-acmp-tst-2.c: New test.
+	* gcc.target/powerpc/pr126513-acmp-tst-3.c: New test.
+
 2026-08-19  Alice Carlotti  <alice.carlotti@arm.com>
 
 	PR target/124629
