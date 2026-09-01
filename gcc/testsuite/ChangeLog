@@ -1,3 +1,120 @@
+2026-08-30  Vincenzo Calabretta  <vincenzo.cal.main@gmail.com>
+
+	Backported from master:
+	2026-08-29  Vincenzo Calabretta  <vincenzo.cal.main@gmail.com>
+
+	PR c++/127046
+	* g++.dg/cpp2a/constexpr-dtor20.C: New test.
+
+2026-08-29  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-29  Jakub Jelinek  <jakub@redhat.com>
+
+	* gfortran.dg/guality/arg1.f90: Put a breakpoint on volatile
+	variable increment instead of on the write statement.
+
+2026-08-29  Georg-Johann Lay  <avr@gjlay.de>
+
+	Backported from master:
+	2026-08-29  Georg-Johann Lay  <avr@gjlay.de>
+
+	PR middle-end/127098
+	* gcc.target/avr/torture/pr127098.c: New test.
+
+2026-08-28  Richard Biener  <rguenther@suse.de>
+
+	Backported from master:
+	2026-08-28  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/127105
+	* gcc.dg/vect/vect-pr127105.c: New testcase.
+
+2026-08-28  Torbjörn SVENSSON  <torbjorn.svensson@foss.st.com>
+
+	Backported from master:
+	2026-08-26  Torbjörn SVENSSON  <torbjorn.svensson@foss.st.com>
+
+	* gcc.dg/vect/pr122797.c: Remove explict "dg-do run".
+	* gcc.dg/vect/pr123731.c: Likewise.
+
+2026-08-27  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-27  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/127100
+	* gfortran.dg/pr127100.f90: New test.
+
+2026-08-27  Michael Meissner  <meissner@linux.ibm.com>
+
+	PR target/120681
+	* gcc.target/powerpc/pr120681.c: New test.
+
+2026-08-27  Michael Meissner  <meissner@linux.ibm.com>
+
+	PR target/120528
+	* gcc.target/powerpc/pr120528.c: New test.
+
+2026-08-27  Michael Meissner  <meissner@linux.ibm.com>
+
+	PR target/99293
+	* gcc.target/powerpc/pr99293.c: New test.
+
+2026-08-27  Michael Meissner  <meissner@linux.ibm.com>
+
+	PR target/117487
+	* gcc.target/powerpc/pr117487.c: New test.
+
+2026-08-27  Michael Meissner  <meissner@linux.ibm.com>
+
+	* gcc.target/powerpc/future-3.c: New test.
+
+2026-08-27  Jakub Jelinek  <jakub@redhat.com>
+
+	Backported from master:
+	2026-08-24  Jakub Jelinek  <jakub@redhat.com>
+
+	* gcc.dg/builtin-stdc-bit-1.c (main): Fix two pastos.
+
+2026-08-26  Eric Botcazou  <ebotcazou@adacore.com>
+
+	* gnat.dg/opt110.adb: New test.
+
+2026-08-26  Dipesh Sharma  <Dipesh.Sharma@amd.com>
+
+	Backported from master:
+	2026-08-25  Dipesh Sharma  <Dipesh.Sharma@amd.com>
+
+	* gcc.target/i386/avx512bmm-check-1.c: New test.
+	* gcc.target/i386/avx512bmm-check-2.c: New test.
+	* gcc.target/i386/avx512bmm-check-3.c: New test.
+
+2026-08-26  Alexandre Oliva  <oliva@adacore.com>
+
+	Backported from master:
+	2026-08-26  Alexandre Oliva  <oliva@adacore.com>
+
+	PR tree-optimization/126650
+	* gcc.dg/torture/pr126650.c: Be explicit about endianness
+	expectations.
+
+2026-08-25  Paul Thomas  <pault@gcc.gnu.org>
+
+	Backported from master:
+	2026-08-09  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/98573
+	* gfortran.dg/allocate_class_5.f90: New test.
+
+2026-08-25  Josef Melcr  <josef.melcr@suse.com>
+
+	Backported from master:
+	2026-08-25  Josef Melcr  <josef.melcr@suse.com>
+
+	PR ipa/127023
+	* gcc.target/i386/pr127023.c: New test.
+
 2026-08-24  Jason Merrill  <jason@redhat.com>
 
 	Backported from master:
