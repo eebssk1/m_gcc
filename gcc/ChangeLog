@@ -1,3 +1,124 @@
+2026-09-14  Jeff Law  <jeffreyalaw@gmail.com>
+
+	Backported from master:
+	2026-09-13  Jeff Law  <jeffreyalaw@gmail.com>
+		    Sun Yuechi  <sunyuechi@iscas.ac.cn
+
+	* config/riscv/riscv-bclr-lowest-set-bit.cc
+	(pass_bclr_lowest_set_bit::execute): Do not handle addiw forms.
+
+2026-09-14  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	Backported from master:
+	2026-09-11  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	PR target/127306
+	* config/riscv/riscv-bclr-lowest-set-bit.cc (find_later_ctz): Fix
+	off-by-one error for scan to verify ctz input isn't modified.
+	(pass_bclr_lowest_bit_set::execute): Remove original AND in case
+	where the CTZ is found after the AND.
+
+2026-09-13  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	Backported from master:
+	2026-09-13  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	PR target/127318
+	* config/riscv/riscv.cc (riscv_v_adjust_scalable_frame): Attach
+	REG_CFA_DEF_CFA note to the copy from the stack pointer.
+
+2026-09-13  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2026-09-13  Xi Ruoyao  <xry111@xry111.site>
+
+	PR target/127153
+	* config/loongarch/loongarch.md (both_non_zero): Defer the split
+	post reload and add constraint to ensure operands[0] and
+	operands[2] are in different hard registers.
+	(both_non_zero_subreg): Likewise.
+
+2026-09-12  Zhongyao Chen  <chenzhongyao.hit@gmail.com>
+
+	Backported from master:
+	2026-09-08  Zhongyao Chen  <chenzhongyao.hit@gmail.com>
+
+	PR target/126932
+	* config/riscv/autovec.md: Rewrite vector FMA patterns.
+	* config/riscv/autovec-opt.md: Likewise and add new patterns.
+
+2026-09-11  Robin Dapp  <robin.dapp@oss.qualcomm.com>
+
+	PR middle-end/127256
+	* lower-subreg.cc (interesting_mode_p): Don't consider
+	unsplittable modes as interesting.
+	(simple_move_operand): Don't split subregs whose outer mode
+	can be split but the inner mode cannot.
+	(simplify_subreg_concatn): Don't insist the outer mode is
+	interesting but rather check that its size is constant.
+
+2026-09-11  Richard Earnshaw  <rearnsha@arm.com>
+
+	Backported from master:
+	2026-09-04  Richard Earnshaw  <rearnsha@arm.com>
+
+	PR target/126463
+	* config/aarch64/aarch64.cc (aarch64_select_cc_mode): Correctly
+	match overflow detection idioms using MINUS and NEG.
+	* config/aarch64/aarch64.md (subv<GPI:mode>4): Re-order the
+	compare into canonical form.
+	(subv<GPI:mode>4_insn): Likewise.
+	(negv<GPI:mode>4): Likewise.
+	(negv<GPI:mode>_insn): Likewise.  Fix typo in output template.
+
+2026-09-08  Jin Ma  <jinma@linux.alibaba.com>
+
+	Backported from master:
+	2026-09-05  Jin Ma  <jinma@linux.alibaba.com>
+
+	PR target/126196
+	* config/riscv/vector-crypto.md (vv_ins_con): New int attribute.
+	(vv_ins1_con): Likewise.
+	(vi_ins1_con): Likewise.
+	(@pred_v<vv_ins1_name><mode>): Use vv_ins1_con.
+	(@pred_crypto_vv<vv_ins_name><ins_type><mode>): Use vv_ins_con.
+	(@pred_vi<vi_ins1_name><mode>_nomaskedoff_scalar): Use vi_ins1_con.
+	(@pred_vsm3me<mode>): Mark the destination as early-clobber.
+
+2026-09-06  Rohith Kapelli  <kapellirohith@gmail.com>
+
+	Backported from master:
+	2026-08-13  Rohith Kapelli  <kapellirohith@gmail.com>
+
+	PR rtl-optimization/125683
+	* simplify-rtx.cc (simplify_context::simplify_ternary_operation):
+	When folding an IF_THEN_ELSE of two equal MEM operands with
+	different memory attributes, return a copy whose attributes are
+	widened to what both operands allow.
+
+2026-09-04  Vineet Gupta  <vineet.gupta@linux.dev>
+
+	Backported from master:
+	2026-06-24  Vineet Gupta  <vineet.gupta@linux.dev>
+
+	PR debug/125421
+	* dwarf2out.cc (modified_type_die): Handle qualified_type being
+	a variant of dtype as if they were identical to avoid peeling a
+	typdef.
+	For named types, use dentry unconditionally as that is valid for
+	both cases of qualified_type == and  != dentry.
+
+2026-09-04  Georg-Johann Lay  <avr@gjlay.de>
+
+	Backported from master:
+	2026-09-04  Georg-Johann Lay  <avr@gjlay.de>
+
+	PR target/127188
+	* config/avr/avr-passes.cc (avr_pass_2moves) <optimize_2moves_bb>:
+	Use next_nondebug_insn_bb to traverse the insns.
+	<optimize_2moves>: Ignore degug insns when traversing
+	DF_REG_USE_CHAIN.
+
 2026-08-29  Georg-Johann Lay  <avr@gjlay.de>
 
 	Backported from master:

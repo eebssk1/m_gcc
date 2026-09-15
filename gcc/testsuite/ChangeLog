@@ -1,3 +1,137 @@
+2026-09-14  Jeff Law  <jeffreyalaw@gmail.com>
+
+	Backported from master:
+	2026-09-13  Jeff Law  <jeffreyalaw@gmail.com>
+		    Sun Yuechi  <sunyuechi@iscas.ac.cn
+
+	* gcc.target/riscv/bclr-lowest-set-bit-1.c: Update expected output.
+	* gcc.target/riscv/bclr-lowest-set-bit-2.c: New test.
+
+2026-09-14  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	Backported from master:
+	2026-09-11  Jeff Law  <jeffrey.law@oss.qualcomm.com>
+
+	PR target/127306
+	* gcc.target/riscv/pr127306.c: New test.
+
+2026-09-13  Zhou Qiankang  <wszqkzqk@qq.com>
+
+	Backported from master:
+	2026-06-08  Zhou Qiankang  <wszqkzqk@qq.com>
+
+	PR c++/125642
+	* g++.dg/pr125642.C: New test.
+
+2026-09-13  Xi Ruoyao  <xry111@xry111.site>
+
+	Backported from master:
+	2026-09-13  Xi Ruoyao  <xry111@xry111.site>
+
+	PR target/127153
+	* c-c++-common/pr127153.c: New test.
+
+2026-09-12  Zhongyao Chen  <chenzhongyao.hit@gmail.com>
+
+	Backported from master:
+	2026-09-08  Zhongyao Chen  <chenzhongyao.hit@gmail.com>
+
+	PR target/126932
+	* gcc.target/riscv/rvv/autovec/ternop/pr126932.c: New test.
+
+2026-09-11  Robin Dapp  <robin.dapp@oss.qualcomm.com>
+
+	PR middle-end/127256
+	* g++.target/aarch64/pr127256.C: New test.
+
+2026-09-11  Richard Earnshaw  <rearnsha@arm.com>
+
+	Backported from master:
+	2026-09-04  Richard Earnshaw  <rearnsha@arm.com>
+
+	PR target/126463
+	* gcc.target/aarch64/negv.c: New test.
+
+2026-09-08  Jin Ma  <jinma@linux.alibaba.com>
+
+	Backported from master:
+	2026-09-05  Jin Ma  <jinma@linux.alibaba.com>
+
+	PR target/126196
+	* gcc.target/riscv/pr126196-1.c: New test.
+	* gcc.target/riscv/pr126196-2.c: New test.
+	* gcc.target/riscv/pr126196-3.c: New test.
+	* gcc.target/riscv/pr126196-4.c: New test.
+
+2026-09-06  Rohith Kapelli  <kapellirohith@gmail.com>
+
+	Backported from master:
+	2026-08-13  Rohith Kapelli  <kapellirohith@gmail.com>
+
+	PR rtl-optimization/125683
+	* gcc.dg/pr125683.c: New test.
+	* gcc.dg/rtl/aarch64/pr125683-flags.c: New test.
+
+2026-09-05  Patrick Palka  <ppalka@redhat.com>
+
+	Backported from master:
+	2026-09-05  Patrick Palka  <ppalka@redhat.com>
+
+	PR c++/127207
+	* g++.dg/modules/friend-15_a.H: New test.
+	* g++.dg/modules/friend-15_b.C: New test.
+
+2026-09-04  Vineet Gupta  <vineet.gupta@linux.dev>
+
+	Backported from master:
+	2026-06-24  Vineet Gupta  <vineet.gupta@linux.dev>
+
+	PR debug/125421
+	* gcc.dg/debug/dwarf2/pr125421.c: New Test.
+
+2026-09-04  Georg-Johann Lay  <avr@gjlay.de>
+
+	Backported from master:
+	2026-09-04  Georg-Johann Lay  <avr@gjlay.de>
+
+	PR target/127188
+	* gcc.target/avr/pr127188.c: New test.
+
+2026-09-03  Patrick Palka  <ppalka@redhat.com>
+
+	Backported from master:
+	2026-08-20  Patrick Palka  <ppalka@redhat.com>
+
+	PR c++/126472
+	* g++.dg/cpp0x/initlist135.C: New test.
+
+2026-09-03  Patrick Palka  <ppalka@redhat.com>
+
+	Backported from master:
+	2026-08-14  Patrick Palka  <ppalka@redhat.com>
+
+	PR c++/123495
+	PR c++/126860
+	* g++.dg/template/non-dependent36.C: New test.
+	* g++.dg/template/non-dependent37.C: New test.
+
+2026-09-03  Odysseas Georgoudis  <odygrd@hotmail.com>
+
+	Backported from master:
+	2026-08-20  Odysseas Georgoudis  <odygrd@hotmail.com>
+		    Jason Merrill  <jason@redhat.com>
+
+	PR c++/124983
+	* g++.dg/template/pr124983.C: New test.
+
+2026-09-03  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	Backported from master:
+	2026-08-31  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	PR fortran/127128
+	* gfortran.dg/do_concurrent_typespec_5.f90: New test.
+
 2026-08-30  Vincenzo Calabretta  <vincenzo.cal.main@gmail.com>
 
 	Backported from master:
