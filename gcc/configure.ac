@@ -1370,7 +1370,7 @@ ACX_HEADER_STRING
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIOCGWINSZ
 AC_CHECK_HEADERS(limits.h stddef.h string.h strings.h stdlib.h time.h iconv.h \
-		 fcntl.h ftw.h unistd.h sys/auxv.h sys/file.h sys/time.h sys/mman.h \
+		 fcntl.h ftw.h unistd.h sched.h sys/auxv.h sys/file.h sys/time.h sys/mman.h \
 		 sys/resource.h sys/param.h sys/times.h sys/stat.h sys/locking.h \
 		 direct.h malloc.h langinfo.h ldfcn.h locale.h wchar.h libgen.h)
 
@@ -1600,7 +1600,7 @@ AC_CHECK_FUNCS(times clock kill getrlimit setrlimit atoq \
 	popen sysconf strsignal getrusage nl_langinfo \
 	gettimeofday mbstowcs wcswidth mmap posix_fallocate setlocale \
 	gcc_UNLOCKED_FUNCS madvise mallinfo mallinfo2 fstatat getauxval \
-	clock_gettime munmap msync get_current_dir_name memrchr)
+	clock_gettime munmap msync get_current_dir_name memrchr sched_yield)
 
 # At least for glibc, clock_gettime is in librt.  But don't pull that
 # in if it still doesn't give us the function we want.

@@ -306,6 +306,10 @@ extern int errno;
 # include <unistd.h>
 #endif
 
+#ifdef HAVE_SCHED_H
+# include <sched.h>
+#endif
+
 #ifdef HAVE_SYS_PARAM_H
 # include <sys/param.h>
 /* We use these identifiers later and they appear in some vendor param.h's.  */
@@ -1276,6 +1280,32 @@ endswith (const char *str, const char *suffix)
     return false;
 
   return memcmp (str + str_len - suffix_len, suffix, suffix_len) == 0;
+}
+
+/* sched_yield may be provided without <sched.h> declaring it.  */
+
+#if defined (HAVE_SCHED_YIELD) && !defined (HAVE_SCHED_H)
+# ifdef __cplusplus
+extern "C"
+# endif
+int sched_yield (void);
+#endif
+
+/* Relinquish the remainder of our timeslice so that the host scheduler can
+   rebalance runnable processes and threads.  This is called whenever LTO
+   finishes a major code generation work unit -- a partition being streamed
+   out, a per-partition analysis step, or a function being compiled in an
+   LTRANS unit -- so that other concurrently running LTO processes (and the
+   rest of the system) get a chance to make progress instead of being
+   starved until we finish the whole stage.  A no-op on hosts that lack
+   sched_yield.  */
+
+static inline void
+lto_sched_yield (void)
+{
+#ifdef HAVE_SCHED_YIELD
+  sched_yield ();
+#endif
 }
 
 #endif /* ! GCC_SYSTEM_H */

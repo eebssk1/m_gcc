@@ -1,3 +1,19 @@
+2026-09-18  EBK21  <handleghincome@avalode.15360864.de>
+
+	Yield to the host scheduler between LTO code generation units.
+	* system.h: Include <sched.h> when available.
+	(lto_sched_yield): New static inline function relinquishing the
+	rest of our timeslice so that the OS can rebalance between other
+	LTO processes/threads and the host.  No-op without sched_yield.
+	* cgraphunit.cc (cgraph_node::expand): Call lto_sched_yield after
+	each function has been generated in LTO mode.
+	* configure.ac: Check for <sched.h> and sched_yield.
+	* config.in: Add placeholders for HAVE_SCHED_H and
+	HAVE_SCHED_YIELD.
+	* configure: Regenerate.
+	* lto-wrapper.cc (run_gcc): Call lto_sched_yield between serial
+	LTRANS jobs.
+
 2026-09-14  Jeff Law  <jeffreyalaw@gmail.com>
 
 	Backported from master:

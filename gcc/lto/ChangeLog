@@ -1,3 +1,19 @@
+2026-09-18  EBK21  <handleghincome@avalode.15360864.de>
+
+	Yield to the host scheduler between LTO code generation units.
+	* lto.cc (materialize_cgraph): Call lto_sched_yield after each
+	materialized node.
+	(stream_out_partitions_1): Call lto_sched_yield after each streamed
+	out partition.
+	* lto-partition.cc (node_into_file_partition)
+	(create_asm_partitions)
+	(lto_max_map)
+	(partitioner_base::finalize)
+	(lto_balanced_map)
+	(lto_locality_map)
+	(lto_promote_cross_file_statics): Call lto_sched_yield at
+	partition boundaries.
+
 2026-08-07  Release Manager
 
 	* GCC 16.2.0 released.

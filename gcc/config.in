@@ -2019,6 +2019,18 @@
 #endif
 
 
+/* Define to 1 if you have the <sched.h> header file. */
+#ifndef USED_FOR_TARGET
+#undef HAVE_SCHED_H
+#endif
+
+
+/* Define to 1 if you have the `sched_yield' function. */
+#ifndef USED_FOR_TARGET
+#undef HAVE_SCHED_YIELD
+#endif
+
+
 /* Define to 1 if you have the `setlocale' function. */
 #ifndef USED_FOR_TARGET
 #undef HAVE_SETLOCALE

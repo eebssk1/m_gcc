@@ -1946,6 +1946,12 @@ cgraph_node::expand (void)
      comdat groups.  */
   assemble_thunks_and_aliases ();
   release_body ();
+
+  /* In LTO mode we have just finished one major code generation unit of an
+     LTRANS partition; let the host scheduler rebalance so that other LTO
+     processes (and threads) get some time to progress.  */
+  if (in_lto_p)
+    lto_sched_yield ();
 }
 
 /* Node comparator that is responsible for the order that corresponds

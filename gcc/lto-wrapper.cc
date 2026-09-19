@@ -2188,6 +2188,10 @@ cont:
 		maybe_unlink (input_names[i]);
 	    }
 
+	  /* This LTRANS partition is done; give the host scheduler a
+	     chance to rebalance before launching the next one.  */
+	  lto_sched_yield ();
+
 	  output_names[i] = output_name;
 	}
       if (parallel)

@@ -154,6 +154,9 @@ materialize_cgraph (void)
 	{
 	  lto_materialize_function (node);
 	  lto_stats.num_input_cgraph_nodes++;
+	  /* One function body read in is a major work unit; yield so
+	     that other LTO processes/the host can rebalance.  */
+	  lto_sched_yield ();
 	}
     }
 
@@ -232,6 +235,10 @@ stream_out_partitions_1 (char *temp_filename, int blen, int min, int max)
        sprintf (temp_filename + blen, "%u.o", p);
        stream_out (temp_filename, ltrans_partitions[p]->encoder, p);
        ltrans_partitions[p]->encoder = NULL;
+       /* We just finished streaming out one partition, a major work unit.
+	  Give other LTO processes and the host a chance to rebalance
+	  before continuing.  */
+       lto_sched_yield ();
      }
 }
 

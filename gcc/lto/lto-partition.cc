@@ -358,6 +358,10 @@ node_into_file_partition (toplevel_node* node,
 	{
 	  partition = new_partition (file_data->file_name);
 	  *slot = partition;
+	  /* A new partition has just been completed: give other LTO
+	     processes/the host a chance to rebalance between these major
+	     code generation units.  */
+	  lto_sched_yield ();
 	}
     }
   else
@@ -449,6 +453,10 @@ create_asm_partitions (int64_t target_size)
       ltrans_partitions[join_into] = ltrans_partitions[join_from];
       ltrans_partition p_into = ltrans_partitions[join_into];
       nonrenameable_symbols.empty ();
+      /* The previous asm partition has been finalized: give other LTO
+	 processes/the host a chance to rebalance between these major
+	 code generation units.  */
+      lto_sched_yield ();
 
       bool first_partition = true;
       for (; join_from < ltrans_partitions.length (); join_from++)
@@ -512,6 +520,9 @@ lto_max_map (void)
 	continue;
       partition = new_partition (node->asm_name ());
       add_symbol_to_partition (partition, node);
+      /* One partition done: give other LTO processes/the host a chance to
+	  rebalance between these major code generation units.  */
+      lto_sched_yield ();
     }
 
   create_partition_if_empty ();
@@ -1005,6 +1016,10 @@ protected:
 
     if (joined)
       ltrans_partitions.safe_push (joined);
+
+    /* One partition done: give other LTO processes/the host a chance to
+       rebalance between these major code generation units.  */
+    lto_sched_yield ();
   }
 
   /* Splits all partition_sets.  */
@@ -1516,6 +1531,10 @@ lto_balanced_map (int n_lto_partitions, int max_partition_size)
 	  last_visited_node = 0;
 	  cost = 0;
 
+	  /* The previous partition is complete: give other LTO processes/the
+	     host a chance to rebalance between these major work units.  */
+	  lto_sched_yield ();
+
 	  if (dump_file)
 	    fprintf (dump_file, "New partition\n");
 	  best_n_nodes = 0;
@@ -1677,6 +1696,9 @@ lto_locality_map (int max_partition_size)
 	  add_symbol_to_partition (partition, node);
 	  add_node_references_to_partition (partition, node);
 	}
+      /* One partition done: give other LTO processes/the host a chance to
+	  rebalance between these major code generation units.  */
+      lto_sched_yield ();
     }
 
   int64_t partition_size = max_partition_size;
@@ -2016,6 +2038,9 @@ lto_promote_cross_file_statics (void)
       part->encoder = compute_ltrans_boundary (part->encoder);
       if (dump_file)
 	fprintf (dump_file, "new encoder %p\n", (void *)part->encoder);
+      /* Boundary computation for one partition is a major work unit; yield
+	 so that other LTO processes/the host can rebalance.  */
+      lto_sched_yield ();
     }
 
   lto_clone_numbers = new hash_map<const char *, unsigned>;
@@ -2052,6 +2077,9 @@ lto_promote_cross_file_statics (void)
 
           promote_symbol (node);
         }
+      /* Promotion scan for this partition is done: yield so other
+	 LTO processes/the host can rebalance.  */
+      lto_sched_yield ();
     }
   delete lto_clone_numbers;
 }
