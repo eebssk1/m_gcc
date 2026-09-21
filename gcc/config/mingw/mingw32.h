@@ -231,16 +231,9 @@ along with GCC; see the file COPYING3.  If not see
   crtend.o%s"
 
 /* Override startfile prefix defaults.  */
-#ifndef STANDARD_STARTFILE_PREFIX_1
-#define STANDARD_STARTFILE_PREFIX_1 "C:/msys64/ucrt64/lib/"
+#if !defined(STANDARD_STARTFILE_PREFIX_2) && !defined(CROSS_DIRECTORY_STRUCTURE)
+#define STANDARD_STARTFILE_PREFIX_2 "" /* MSYS2 doesn't use /usr/lib for MINGW */
 #endif
-#ifndef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_2 ""
-#endif
-
-/* For native mingw-version we need to take care that NATIVE_SYSTEM_HEADER_DIR
-   macro contains POSIX-style path.  See bug 52947.  */
-#undef NATIVE_SYSTEM_HEADER_DIR
 
 /* Output STRING, a string representing a filename, to FILE.
    We canonicalize it to be in Unix format (backslashes are replaced
