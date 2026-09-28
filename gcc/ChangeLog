@@ -1,18 +1,55 @@
-2026-09-18  EBK21  <handleghincome@avalode.15360864.de>
+2026-09-26  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
 
-	Yield to the host scheduler between LTO code generation units.
-	* system.h: Include <sched.h> when available.
-	(lto_sched_yield): New static inline function relinquishing the
-	rest of our timeslice so that the OS can rebalance between other
-	LTO processes/threads and the host.  No-op without sched_yield.
-	* cgraphunit.cc (cgraph_node::expand): Call lto_sched_yield after
-	each function has been generated in LTO mode.
-	* configure.ac: Check for <sched.h> and sched_yield.
-	* config.in: Add placeholders for HAVE_SCHED_H and
-	HAVE_SCHED_YIELD.
+	Backported from master:
+	2026-05-11  Jerry DeLisle  <jvdelisle@gcc.gnu.org>
+
+	* flag-types.h (gfc_fcoarray): Add GFC_FCOARRAY_SHARED.
+
+2026-09-24  Richard Biener  <rguenther@suse.de>
+
+	Backported from master:
+	2026-09-24  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/127571
+	* tree-ssa-sccvn.cc (vn_walk_cb_data::push_partial_def):
+	Re-associate offset computation to avoid overflow.
+
+2026-09-23  Zhongyao Chen  <chenzhongyao.hit@gmail.com>
+
+	Backported from master:
+	2026-09-18  Zhongyao Chen  <chenzhongyao.hit@gmail.com>
+
+	PR rtl-optimization/127367
+	* ext-dce.cc: Include regs.h.
+	(ext_dce_process_uses): Handle multi-register hard regs.
+
+2026-09-23  liuhongt  <hongtao.liu@intel.com>
+
+	Backported from master:
+	2026-09-22  liuhongt  <hongtao.liu@intel.com>
+
+	PR target/127500
+	* config/i386/i386.cc (ix86_split_stlf_stall_load): Don't split
+	the load when the address adjusted by 8 is not a valid memory
+	address.
+
+2026-09-22  Uros Bizjak  <ubizjak@gmail.com>
+
+	Backported from master:
+	2026-09-21  Uros Bizjak  <ubizjak@gmail.com>
+
+	PR target/127461
+	* config/i386/mmx.md (negv2qi2): Use optimize_size instead of
+	optimize_function_for_size_p (cfun) in the enabled attribute.
+	(<plusminus:insn>v2qi3): Ditto.
+
+2026-09-21  Christophe Lyon  <christophe.lyon@arm.com>
+
+	Backported from master:
+	2026-09-21  Christophe Lyon  <christophe.lyon@arm.com>
+
+	* configure.ac: Replace 'ret' with '$insn'.
 	* configure: Regenerate.
-	* lto-wrapper.cc (run_gcc): Call lto_sched_yield between serial
-	LTRANS jobs.
 
 2026-09-18  Srinath Parvathaneni  <srinath.parvathaneni@arm.com>
 
@@ -162,7 +199,6 @@
 
 	* doc/install.texi: Remove incorrect mention of --with-long-double-64.
 	Co-authored-by: Kishan Parmar <kishan@linux.ibm.com>
-0b1bd1e984db5e9f9ad94f38014e02e528116a79
 
 2026-09-14  Jeff Law  <jeffreyalaw@gmail.com>
 
