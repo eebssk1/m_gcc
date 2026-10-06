@@ -1,3 +1,10 @@
+2026-10-05  Anlai Lu  <agicy@qq.com>
+	    Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	* testsuite/27_io/basic_ostream/print/buffered.cc: New test.
+	* testsuite/std/format/functions/format_to_ostreambuf.cc:
+	New test.
+
 2026-10-02  Jonathan Wakely  <jwakely@redhat.com>
 
 	Backported from master:
