@@ -4073,7 +4073,7 @@ pushdecl (tree decl, bool hiding)
 	  for (ovl_iterator iter (oldi); iter; ++iter)
 	    if (iter.using_p ())
 	      ; /* Ignore using decls here.  */
-	    else if (iter.hidden_p ()
+	    else if (DECL_IS_UNDECLARED_BUILTIN (*iter)
 		     && TREE_CODE (*iter) == FUNCTION_DECL
 		     && DECL_LANG_SPECIFIC (*iter)
 		     && DECL_MODULE_IMPORT_P (*iter))
