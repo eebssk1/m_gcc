@@ -1,3 +1,54 @@
+2026-10-05  Julio Sotoriva De Bastiani  <Julio.SotorivaDeBastiani@arm.com>
+
+	PR target/126096
+	* config/aarch64/aarch64-sve-builtins.cc
+	(gimple_folder::fold_to_pfalse): Handle svcount_t.
+	* config/aarch64/aarch64-sve-builtins-base.cc
+	(svpfalse_impl::fold): Handle svcount_t.
+	(svwhilelx_impl::fold_type): Punt for non-pfalse svcount_t.
+
+2026-10-05  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-05  Jonathan Wakely  <jwakely@redhat.com>
+
+	* doc/extend.texi (Attribute Syntax): Remove stray period.
+
+2026-10-02  Tamar Christina  <tamar.christina@arm.com>
+
+	Backported from master:
+	2026-09-24  Tamar Christina  <tamar.christina@arm.com>
+
+	PR tree-optimization/127579
+	* tree-vect-loop.cc (info_for_reduction): Add assert.
+	* tree-vect-stmts.cc (vectorizable_operation): Pass SLP node.
+
+2026-10-02  Alexey Lapshin  <alexey.lapshin@espressif.com>
+
+	Backported from master:
+	2026-09-29  Alexey Lapshin  <alexey.lapshin@espressif.com>
+
+	PR target/107549
+	* config/xtensa/xtensa.cc (xt_true_regnum): Don't index
+	reg_renumber before LRA starts.
+
+2026-09-30  Alfie Richards  <alfie.richards@arm.com>
+
+	Backported from master:
+	2026-09-15  Alfie Richards  <alfie.richards@arm.com>
+		    Tamar Christina  <Tamar.Christina@arm.com>
+
+	PR target/126629
+	* config/aarch64/aarch64-sve-builtins-base.cc
+	(emit_ldf1_ffr_update): New.
+	(svldff1_gather_impl::expand): Change ffr update.
+	(svldff1_gather_extend::expand): Likewise.
+	(svldxf1_impl::expand): Likewise.
+	(svldxf1_extend_impl::expand): Likewise.
+	* config/aarch64/aarch64-sve.md (aarch64_update_ffr_for_load):
+	Change to...
+	(@aarch64_update_ffr<mode>): ...this.
+
 2026-09-29  Eric Botcazou  <ebotcazou@adacore.com>
 
 	* tree-ssa-forwprop.cc (optimize_agr_copyprop_1): Use the index of
