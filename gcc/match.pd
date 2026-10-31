@@ -3633,7 +3633,9 @@ DEFINE_INT_AND_FLOAT_ROUND_FN (RINT)
 			(bit_xor:c @0 INTEGER_CST@3)) integer_zerop)
 	 (signed_integer_sat_val @0)
 	 @2)
-  (if (wi::bit_and (wi::to_wide (@1), wi::to_wide (@3)) == 0)))
+  /* (X ^ C3) < 0 has to test that X has the sign of IMM, so C3 and IMM
+     need opposite signs.  The source form above has C3 == ~IMM.  */
+  (if (tree_int_cst_sign_bit (@1) != tree_int_cst_sign_bit (@3))))
 
 (match (signed_integer_sat_add @0 @1)
   /* T SUM = (T)((UT)X + (UT)-1);
@@ -7596,9 +7598,11 @@ DEFINE_INT_AND_FLOAT_ROUND_FN (RINT)
  (ltgt @0 @0)
  (if (!flag_trapping_math || !tree_expr_maybe_nan_p (@0))
   { constant_boolean_node (false, type); }))
+/* LTGT raises an exception for a quiet NaN, ORDERED and NE do not.  */
 (simplify
  (bit_and:c (ordered @0 @1) (ne @0 @1))
- (ltgt @0 @1))
+ (if (!flag_trapping_math || !HONOR_NANS (@0))
+  (ltgt @0 @1)))
 
 /* x == ~x -> false */
 /* x != ~x -> true */
@@ -11994,7 +11998,7 @@ and,
   (if ((INTEGRAL_TYPE_P (type)
        || (!flag_trapping_math && SCALAR_FLOAT_TYPE_P (type)))
        && ((INTEGRAL_TYPE_P (TREE_TYPE (@2))
-	    && INTEGRAL_TYPE_P (TREE_TYPE (@3)))
+	    && tree_nop_conversion_p (TREE_TYPE (@2), TREE_TYPE (@3)))
 	   || (SCALAR_FLOAT_TYPE_P (TREE_TYPE (@2))
 	       && types_match (TREE_TYPE (@2), TREE_TYPE (@3))))
        && !operand_equal_p (TYPE_SIZE (type), TYPE_SIZE (TREE_TYPE (@0)))
@@ -12259,8 +12263,7 @@ and,
    (if (type_has_mode_precision_p (type)
 	&& tree_fits_uhwi_p (@1)
 	&& tree_fits_uhwi_p (@3)
-	&& tree_fits_uhwi_p (@4)
-	&& ((~((HOST_WIDE_INT_1U << tree_to_uhwi (@1)) - 1)) & tree_to_uhwi (@4)) == 0
+	&& (wi::mask (tree_to_uhwi (@1), true, TYPE_PRECISION (type)) & wi::to_wide (@4)) == 0
         && (tree_to_uhwi (@1) + tree_to_uhwi (@3)) == TYPE_PRECISION (type)
         && TYPE_UNSIGNED (type)
         && @0 == @2)
@@ -12273,9 +12276,8 @@ and,
 	     (rshift @3 INTEGER_CST@4))
    (if (type_has_mode_precision_p (type)
 	&& tree_fits_uhwi_p (@1)
-	&& tree_fits_uhwi_p (@2)
 	&& tree_fits_uhwi_p (@4)
-	&& (((((HOST_WIDE_INT_1U << tree_to_uhwi (@1)) - 1)) & tree_to_uhwi (@2)) == 0)
+	&& ((wi::mask (tree_to_uhwi (@1), false, TYPE_PRECISION (type)) & wi::to_wide (@2)) == 0)
         && (tree_to_uhwi (@1) + tree_to_uhwi (@4)) == TYPE_PRECISION (type)
         && TYPE_UNSIGNED (type)
         && @0 == @3)

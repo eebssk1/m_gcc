@@ -17046,6 +17046,8 @@ tsubst_splice_expr (tree t, tree args, tsubst_flags_t complain, tree in_decl)
      certain kind of entities.  */
   if (SPLICE_EXPR_MEMBER_ACCESS_P (t))
     gcc_assert (valid_splice_for_member_access_p (op, /*decls_only_p=*/false));
+  else if (SPLICE_EXPR_EXPRESSION_P (t))
+    op = convert_from_reference (op);
 
   return op;
 }
@@ -22727,13 +22729,15 @@ tsubst_expr (tree t, tree args, tsubst_flags_t complain, tree in_decl)
 	    r = build_ptrmemfunc_access_expr (object, DECL_NAME (member));
 	    RETURN (r);
 	  }
-	else if (TREE_CODE (member) == FIELD_DECL)
+	/* For obj->[:^^A::m:], go down the finish_class_member_access_expr
+	   path because object's type may not be instantiated yet.  */
+	else if (TREE_CODE (member) == FIELD_DECL
+		 && !COMPONENT_REF_SPLICE_P (t))
 	  {
 	    /* Assume access of this FIELD_DECL has already been checked; we
 	       don't recheck it to avoid bogus access errors when substituting
 	       a reduced constant initializer (97740).  */
-	    gcc_checking_assert (TREE_CODE (TREE_OPERAND (t, 1)) == FIELD_DECL
-				 || dependent_splice_p (TREE_OPERAND (t, 1)));
+	    gcc_checking_assert (TREE_CODE (TREE_OPERAND (t, 1)) == FIELD_DECL);
 	    push_deferring_access_checks (dk_deferred);
 	    r = finish_non_static_data_member (member, object, NULL_TREE,
 					       complain);
@@ -26126,14 +26130,14 @@ unify_array_domain (tree tparms, tree targs,
      by adding one to the other bound.  */
   if (parm_cst && !arg_cst)
     parm_max = fold_build2_loc (input_location, PLUS_EXPR,
-				integer_type_node,
+				TREE_TYPE (parm_max),
 				parm_max,
-				integer_one_node);
+				build_int_cst (TREE_TYPE (parm_max), 1));
   else if (arg_cst && !parm_cst)
     arg_max = fold_build2_loc (input_location, PLUS_EXPR,
-			       integer_type_node,
+			       TREE_TYPE (arg_max),
 			       arg_max,
-			       integer_one_node);
+			       build_int_cst (TREE_TYPE (arg_max), 1));
 
   return unify (tparms, targs, parm_max, arg_max,
 		UNIFY_ALLOW_INTEGER, explain_p);

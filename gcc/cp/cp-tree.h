@@ -4879,7 +4879,7 @@ get_vec_init_expr (tree t)
 /* The underlying artificial VAR_DECL for structured binding.  On the
    artificial base VAR_DECL this can be NULL, or integer_{zero,one}_node
    for structured binding used in if/while/for resp. switch conditions,
-   or a TARGET_EXPR with the condition value after cp_finish_decomp in
+   or a NON_LVALUE_EXPR with the condition value after cp_finish_decomp in
    those cases.  */
 #define DECL_DECOMP_BASE(NODE) \
   (LANG_DECL_DECOMP_CHECK (NODE)->base)
@@ -9462,6 +9462,7 @@ extern bool cxx_constexpr_quiet_p		(const constexpr_ctx *);
 extern mce_value cxx_constexpr_manifestly_const_eval (const constexpr_ctx *);
 extern tree cxx_constexpr_caller		(const constexpr_ctx *);
 extern tree cxx_constexpr_consteval_block	(const constexpr_ctx *);
+extern bool cxx_constexpr_in_eval_lifetime_p	(const constexpr_ctx *, tree);
 
 /* An RAII sentinel used to restrict constexpr evaluation so that it
    doesn't do anything that causes extra DECL_UID generation.  */

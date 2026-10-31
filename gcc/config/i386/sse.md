@@ -27823,7 +27823,7 @@
 	(any_rotate:VI1_AVX512_3264
 	  (match_operand:VI1_AVX512_3264 1 "register_operand")
 	  (match_operand:SI 2 "const_int_operand")))]
-  "TARGET_GFNI"
+  "TARGET_GFNI && TARGET_AVX2"
 {
   rtx matrix = ix86_vgf2p8affine_shift_matrix (operands[0], operands[2], <CODE>);
   emit_insn (gen_vgf2p8affineqb_<mode> (operands[0], operands[1], matrix,
@@ -29914,6 +29914,14 @@
    (set_attr "prefix" "maybe_evex")
    (set_attr "mode" "<sseinsnmode>")])
 
+(define_mode_attr avx_vec_concat_isa
+  [(V32QI "avx512vl") (V16HI "avx512vl") (V16HF "avx512vl")
+   (V16BF "avx512vl") (V8SI "avx512vl") (V4DI "avx512vl")
+   (V8SF "avx512vl") (V4DF "avx512vl") (V64QI "avx512f")
+   (V32HI "avx512f") (V32HF "avx512f") (V32BF "avx512f")
+   (V16SI "avx512f") (V8DI "avx512f") (V16SF "avx512f")
+   (V8DF "avx512f")])
+
 (define_insn "avx_vec_concat<mode>"
   [(set (match_operand:V_256_512 0 "register_operand" "=x,v,x,Yv")
 	(vec_concat:V_256_512
@@ -30017,7 +30025,7 @@
       gcc_unreachable ();
     }
 }
-  [(set_attr "isa" "noavx512f,avx512f,*,*")
+  [(set_attr "isa" "no<avx_vec_concat_isa>,<avx_vec_concat_isa>,*,*")
    (set_attr "addr" "gpr16,*,*,*")
    (set_attr "type" "sselog,sselog,ssemov,ssemov")
    (set_attr "c86_attr" "insertx,insertx,*,*")

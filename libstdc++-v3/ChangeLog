@@ -1,3 +1,191 @@
+2026-10-29  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-29  Jonathan Wakely  <jwakely@redhat.com>
+
+	* include/bits/stl_bvector.h (_M_check_and_initialize): New
+	function.
+	(vector(size_type, const bool&, const allocator_type&))
+	(vector(from_range_t, R&&, const Alloc&))
+	(_M_initialize_dispatch, _M_initialize_range): Use new function
+	instead of _M_initialize.
+	(_M_initialize): Add debug assertion.
+	* testsuite/23_containers/vector/bool/prX.cc: New test.
+
+2026-10-29  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-29  Jonathan Wakely  <jwakely@redhat.com>
+
+	* src/c++20/tzdb.cc (tzdb::locate_zone): Adjust exception text
+	to say "time zone".
+	* testsuite/std/time/tzdb/links.cc: Adjust expected exception
+	text.
+
+2026-10-29  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-29  Jonathan Wakely  <jwakely@redhat.com>
+
+	* include/parallel/search.h (__search_template): Increase array
+	size.
+
+2026-10-28  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-20  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127476
+	* include/std/memory [!_GLIBCXX_HOSTED]: Do not include
+	bits/indirect.h.
+
+2026-10-28  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-02  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127675
+	* include/ext/pb_ds/detail/debug_map_base.hpp (split, join): Use
+	std::list::splice to move elements without reallocating.
+	* include/ext/pb_ds/detail/ov_tree_map_/constructors_destructor_fn_imps.hpp
+	(copy_from_ordered_range(It, It, It, It)): Do not allocate new
+	storage for an empty container.
+	* include/ext/pb_ds/detail/ov_tree_map_/erase_fn_imps.hpp
+	(erase_if): Do not modify this->debug_base::m_keys until all
+	allocations and other potentially-throwing operations have
+	completed successfully.
+	(erase_imp): Do not allocate new storage for an empty container.
+	* testsuite/ext/pb_ds/regression/127675.cc: New test.
+	* testsuite/util/testsuite_rng.h (get_time_determined_seed): Use
+	getenv("GLIBCXX_SEED_TEST_RNG") to allow the seed to be fixed.
+
+2026-10-28  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-01  Jonathan Wakely  <jwakely@redhat.com>
+
+	* testsuite/ext/pb_ds/regression/hash_map_rand.cc: Remove c++17
+	target selector.
+	* testsuite/ext/pb_ds/regression/hash_set_rand.cc: Likewise.
+	* testsuite/ext/pb_ds/regression/list_update_map_rand.cc:
+	Likewise.
+	* testsuite/ext/pb_ds/regression/list_update_set_rand.cc:
+	Likewise.
+	* testsuite/ext/pb_ds/regression/priority_queue_rand.cc:
+	Likewise.
+	* testsuite/ext/pb_ds/regression/tree_map_rand.cc: Likewise.
+	* testsuite/ext/pb_ds/regression/tree_set_rand.cc: Likewise.
+	* testsuite/ext/pb_ds/regression/trie_map_rand.cc: Likewise.
+	* testsuite/ext/pb_ds/regression/trie_set_rand.cc: Likewise.
+
+2026-10-26  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	* include/std/mdspan (layout_stride::mapping::_M_check_unique):
+	Define.
+	(layout_stride::mapping(const extents_type&, span<....>)):
+	Add __glibcxx_assert on _M_check_unique.
+	* testsuite/23_containers/mdspan/layouts/stride_neg.cc:
+	Test for the new added assertions.
+	* testsuite/23_containers/mdspan/layouts/stride_debug_neg.cc:
+	New test covering cases detected only in debug mode.
+	(cherry picked from commits 1a4d8dc0d2dc045bbb93654ae66fb80276dc6690)
+	(0b3c5e87f6c5a93076227883fa2f882a4e879e63)
+
+2026-10-24  John David Anglin  <danglin@gcc.gnu.org>
+
+	* config/abi/post/hppa-linux-gnu/baseline_symbols.txt: Update.
+
+2026-10-14  Hugo Beauzée-Luyssen  <hugo.beauzee@datadoghq.com>
+
+	Backported from master:
+	2026-10-14  Hugo Beauzée-Luyssen  <hugo.beauzee@datadoghq.com>
+		    Jonathan Wakely  <jwakely@redhat.com>
+
+	* include/bits/chrono_io.h: Check __glibcxx_chrono for C++20
+	tzdb features instead of the ABI macros.
+	* include/bits/version.def (chrono): Use extra_cond instead of
+	cxx11abi to also define 201907 for old-ABI-only builds.
+	* include/bits/version.h: Regenerate.
+	* include/std/chrono: Check __cpp_lib_chrono instead of the
+	ABI macros.
+	* testsuite/lib/libstdc++.exp (check_effective_target_tzdb):
+	Replace cxx11_abi check with hosted check and check
+	__cpp_lib_chrono in preprocessor condition.
+	* testsuite/libstdc++-prettyprinters/chrono.cc: Use
+	__cpp_lib_chrono for preprocessor condition and use tzdb for
+	effective target.  Remove dg-additional-options.
+	* testsuite/std/time/format/data_not_present_neg.cc: Use
+	__cpp_lib_chrono for preprocessor conditions and use tzdb for
+	effective target.
+	* testsuite/std/time/format/empty_spec.cc: Use __cpp_lib_chrono
+	for preprocessor conditions.
+	* testsuite/std/time/format/nonlocking.cc: Likewise.
+	* testsuite/std/time/format/pr117214.cc: Likewise.
+	* testsuite/std/time/format/pr119517.cc: Likewise.
+	* testsuite/std/time/format/whitespace.cc: Likewise.
+	* testsuite/std/time/hash.cc: Likewise.
+	* testsuite/std/time/syn_c++20.cc: Fix typo in macro name and
+	expect new value for !_GLIBCXX_USE_DUAL_ABI.
+	* testsuite/std/time/tzdb/1.cc: Require tzdb effective target
+	instead of cxx11_abi.
+	* testsuite/std/time/tzdb_list/requirements.cc: Likewise.
+	* testsuite/std/time/zoned_time/deduction.cc: Likewise.
+	* testsuite/std/time/zoned_time/io.cc: Likewise.
+	* testsuite/std/time/zoned_time/req_neg.cc: Likewise.
+	* testsuite/std/time/zoned_time/requirements.cc: Likewise.
+	* testsuite/std/time/zoned_traits.cc: Likewise.
+
+2026-10-14  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-13  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/127757
+	* src/c++20/atomic.cc (__waitable_state::_M_enter_wait): Add
+	comment.
+	(__waitable_state::_M_waiting): Add seq_cst fence and comments.
+	* testsuite/29_atomics/atomic/wait_notify/127757.cc: New test.
+
+2026-10-14  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-05  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/115955
+	* src/c++20/atomic.cc (__waitable_state::_S_state_for): Use a
+	real hash function to map addresses to waitable states.
+
+2026-10-14  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-05  Jonathan Wakely  <jwakely@redhat.com>
+
+	* include/std/bitset (operator>>): Define __array_len to ensure
+	that the array size is never zero. Add uninitialized attribute
+	to __buf.
+
+2026-10-14  Jonathan Wakely  <jwakely@redhat.com>
+
+	Backported from master:
+	2026-10-02  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/124370
+	* include/std/bitset (operator>>): Use array inside _Buffer
+	instead of __builtin_alloca.
+	* testsuite/20_util/bitset/io/input.cc: Suppress pedwarn about
+	C++14 binary literal.
+	* testsuite/20_util/bitset/io/wchar_t.cc: New test.
+
+2026-10-08  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	Backported from master:
+	2026-10-07  Tomasz Kamiński  <tkaminsk@redhat.com>
+
+	* include/std/chrono (chrono::__detail::__get_leap_second_info):
+	Update expiry date for leap seconds list.
+	* src/c++20/tzdb.cc (chrono::<unnamed>::fixed_expiry): Likewise.
+	* src/c++20/tzdata.zi: Import new file from 2026e release.
+
 2026-10-05  Anlai Lu  <agicy@qq.com>
 	    Tomasz Kamiński  <tkaminsk@redhat.com>
 
